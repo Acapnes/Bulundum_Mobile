@@ -68,9 +68,8 @@ class _LoginMainState extends State<LoginMain> {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () {
-                            Navigator.push(
-                                context, MaterialPageRoute(builder: (context) => MainMenu()));
-                            //login();
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
+                            login();
                           },
                         ),
                       ),
@@ -109,11 +108,12 @@ class _LoginMainState extends State<LoginMain> {
 
   Future<void> login() async {
     if (passwordController.text.isNotEmpty && emailController.text.isNotEmpty) {
-      var response = await http.post(Uri.parse("https://reqres.in/api/login"),
+      var response = await http.post(Uri.parse("https://dev.bulundum.com/api/v3/login"),
           body: ({
-            'email': emailController.text,
-            'password': passwordController.text,
+            'Username': emailController.text,
+            'Password': passwordController.text,
           }));
+      print(response.body);
       if (response.statusCode == 200) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => MainMenu()));
