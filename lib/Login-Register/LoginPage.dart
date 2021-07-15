@@ -37,7 +37,7 @@ class _LoginMainState extends State<LoginMain> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(bottom: 40),
+                margin: EdgeInsets.only(bottom: 50),
                 child: Column(
                   children: [
                     Align(
