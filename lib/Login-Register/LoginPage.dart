@@ -2,6 +2,7 @@ import 'package:bulundum_mobile/Login-Register/RegisterPage.dart';
 import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginMain extends StatefulWidget {
   const LoginMain({Key key}) : super(key: key);
@@ -68,7 +69,6 @@ class _LoginMainState extends State<LoginMain> {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
                             login();
                           },
                         ),
@@ -113,17 +113,24 @@ class _LoginMainState extends State<LoginMain> {
             'Username': emailController.text,
             'Password': passwordController.text,
           }));
-      print(response.body);
       if (response.statusCode == 200) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MainMenu()));
+        Map<String,dynamic>res = jsonDecode(response.body);
+        print(res);
+        if ((res["Success"]).toString() == "1") {
+        
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => MainMenu()));
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Wrong username or password")));
+        }
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Invalid Credentials")));
+            .showSnackBar(SnackBar(content: Text("Communication with server failed. Try again in a few minutes.")));
       }
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Black Failed Not Allowed")));
+          .showSnackBar(SnackBar(content: Text("Please fill both fields")));
     }
   }
 }
