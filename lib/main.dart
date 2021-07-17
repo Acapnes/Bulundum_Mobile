@@ -139,8 +139,49 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
-//Text("Bulduğunuzu Ulaştırın",style: TextStyle(fontSize: 30,color: Colors.orangeAccent),),
-class SecondPage extends StatelessWidget {
+class SecondPage extends StatefulWidget {
+
+  @override
+  _SecondPageState createState() => _SecondPageState();
+}
+
+class _SecondPageState extends State<SecondPage> {
+
+  String sk1 = "", sk2 = "",LoggedIn="";
+
+  @override
+  void initState(){
+    getData();
+
+    if(sk1!=null && sk2!=null)
+    {
+      LoggedIn = "Oturum Kapat";
+    }
+    else
+    {
+      LoggedIn = "Oturum Aç";
+    }
+  }
+
+  getData() async {
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      sk1 = sharedPreferences.get("Username");
+      sk2 = sharedPreferences.get("Password");
+      print(sk1);
+      print(sk2);
+  }
+
+
+  RaisedButton CustomButton() {
+    return RaisedButton(
+      color: Color(0xFF0078CE),
+      child: Text(LoggedIn,style: TextStyle(color: Colors.white,fontSize: 18)),
+      onPressed: (){},
+    );
+  }
+
+  String LoginButton = "Oturum Aç";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,7 +206,7 @@ class SecondPage extends StatelessWidget {
                         child: Text(
                           "Kaybettiğinize Ulaşın",
                           style:
-                              TextStyle(fontSize: 35, color: Colors.blueAccent),
+                          TextStyle(fontSize: 35, color: Colors.blueAccent),
                         )),
                   ),
                   Padding(
@@ -193,14 +234,7 @@ class SecondPage extends StatelessWidget {
                       onPressed: () {},
                     ),
                   ),
-                  Container(
-                    child: RaisedButton(
-                      color: Color(0xFF0078CE),
-                      child: Text("Oturum Aç",
-                          style: TextStyle(color: Colors.white,fontSize: 18)),
-                      onPressed: () {},
-                    ),
-                  ),
+                  CustomButton(),
                 ],
               ),
             )
@@ -210,3 +244,5 @@ class SecondPage extends StatelessWidget {
     );
   }
 }
+
+

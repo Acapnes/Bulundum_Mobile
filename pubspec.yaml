@@ -35,10 +35,10 @@ dev_dependencies:
   image_picker:
   path_provider:
   qr_flutter:
-  flutter_launcher_icons: ^0.9.0
+  flutter_launcher_icons:
 
 flutter_icons:
-  image_path: "img/icon.png"
+  image_path: "assets/icon.png"
   android: true
   ios: true
 
