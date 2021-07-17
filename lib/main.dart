@@ -140,43 +140,45 @@ class _MyHomePageState extends State<MyHomePage>
 }
 
 class SecondPage extends StatefulWidget {
-
   @override
   _SecondPageState createState() => _SecondPageState();
 }
 
 class _SecondPageState extends State<SecondPage> {
-
-  String sk1 = "", sk2 = "",LoggedIn="";
+  String sk1 = "", sk2 = "", LoggedIn = "", go = "MyHomePage";
 
   @override
-  void initState(){
+  void initState() {
     getData();
 
-    if(sk1!=null && sk2!=null)
-    {
+    if (sk1 != null && sk2 != null) {
       LoggedIn = "Oturum Kapat";
-    }
-    else
-    {
+    } else {
       LoggedIn = "Oturum Aç";
     }
   }
 
   getData() async {
-      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-      sk1 = sharedPreferences.get("Username");
-      sk2 = sharedPreferences.get("Password");
-      print(sk1);
-      print(sk2);
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sk1 = sharedPreferences.get("Username");
+    sk2 = sharedPreferences.get("Password");
+    print(sk1);
+    print(sk2);
   }
-
 
   RaisedButton CustomButton() {
     return RaisedButton(
       color: Color(0xFF0078CE),
-      child: Text(LoggedIn,style: TextStyle(color: Colors.white,fontSize: 18)),
-      onPressed: (){},
+      child:
+          Text(LoggedIn, style: TextStyle(color: Colors.white, fontSize: 18)),
+      onPressed: () {
+        if (LoggedIn == "Oturum Aç") {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LoginMain()));
+        } else {
+          print("Oturumu Kapatma kodu");
+        }
+      },
     );
   }
 
@@ -206,7 +208,7 @@ class _SecondPageState extends State<SecondPage> {
                         child: Text(
                           "Kaybettiğinize Ulaşın",
                           style:
-                          TextStyle(fontSize: 35, color: Colors.blueAccent),
+                              TextStyle(fontSize: 35, color: Colors.blueAccent),
                         )),
                   ),
                   Padding(
@@ -230,7 +232,7 @@ class _SecondPageState extends State<SecondPage> {
                     child: RaisedButton(
                       color: Color(0xFF0078CE),
                       child: Text("Tanıtım",
-                          style: TextStyle(color: Colors.white,fontSize: 18)),
+                          style: TextStyle(color: Colors.white, fontSize: 18)),
                       onPressed: () {},
                     ),
                   ),
@@ -244,5 +246,3 @@ class _SecondPageState extends State<SecondPage> {
     );
   }
 }
-
-
