@@ -21,7 +21,7 @@ class _RegisterMainState extends State<RegisterMain> {
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 200,horizontal: 20),
+        margin: EdgeInsets.only(left: 20,right: 20,top: 75),
         child: Column(
           children: <Widget>[
             Container(
@@ -38,6 +38,8 @@ class _RegisterMainState extends State<RegisterMain> {
                             child:
                                 Text("İsim", style: TextStyle(fontSize: 16))),
                         TextField(
+                          autofocus: true,
+                          textInputAction: TextInputAction.next,
                           controller: NameController,
                           decoration: InputDecoration(hintText: ''),
                         ),
@@ -53,6 +55,7 @@ class _RegisterMainState extends State<RegisterMain> {
                             child: Text("Soyisim",
                                 style: TextStyle(fontSize: 16))),
                         TextField(
+                          textInputAction: TextInputAction.next,
                           controller: LastNameController,
                           decoration: InputDecoration(hintText: ''),
                         ),
@@ -75,6 +78,7 @@ class _RegisterMainState extends State<RegisterMain> {
                             child: Text("E-Posta / Kullanıcı adı",
                                 style: TextStyle(fontSize: 16))),
                         TextField(
+                          textInputAction: TextInputAction.next,
                           controller: IdController,
                           decoration: InputDecoration(hintText: ''),
                         ),
@@ -90,6 +94,7 @@ class _RegisterMainState extends State<RegisterMain> {
                             child:
                                 Text("Şifre", style: TextStyle(fontSize: 16))),
                         TextField(
+                          textInputAction: TextInputAction.done,
                           controller: PwController,
                           decoration: InputDecoration(hintText: ''),
                         ),

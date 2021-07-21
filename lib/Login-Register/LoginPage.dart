@@ -1,6 +1,8 @@
+import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Login-Register/RegisterPage.dart';
 import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
 import 'package:bulundum_mobile/main.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -26,8 +28,9 @@ class _LoginMainState extends State<LoginMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
+      drawer: mainDrawer(),
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 200,horizontal: 20),
+        margin: EdgeInsets.only(left: 20,right: 20,top: 75),
         child: Form(
           child: Column(
             children: <Widget>[
@@ -40,6 +43,9 @@ class _LoginMainState extends State<LoginMain> {
                         child: Text("E-Posta / Kullanıcı Adı",
                             style: TextStyle(fontSize: 16))),
                     TextField(
+                      autofocus: true,
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.emailAddress,
                       controller: emailController,
                       decoration: InputDecoration(hintText: ''),
                     ),
@@ -54,8 +60,13 @@ class _LoginMainState extends State<LoginMain> {
                         alignment: Alignment.topLeft,
                         child: Text("Şifre", style: TextStyle(fontSize: 16))),
                     TextField(
+                      textInputAction: TextInputAction.done,
+                      keyboardType: TextInputType.visiblePassword,
                       controller: passwordController,
                       decoration: InputDecoration(hintText: ''),
+                      onSubmitted: (term){
+
+                      },
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 40),

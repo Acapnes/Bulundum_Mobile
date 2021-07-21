@@ -1,3 +1,4 @@
+import 'package:bulundum_mobile/Login-Register/LoginPage.dart';
 import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
 import 'package:bulundum_mobile/main.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,22 @@ class StateFulDrawer extends State {
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => MyApp()));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.event_note),
+            title: Text("Menü"),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MainMenu()));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.event_note),
+            title: Text("Login"),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginMain()));
             },
           ),
         ],
