@@ -19,16 +19,11 @@ class _RegisterMainState extends State<RegisterMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Container(
-        margin: EdgeInsets.all(20),
+        margin: EdgeInsets.symmetric(vertical: 200,horizontal: 20),
         child: Column(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 80, bottom: 80),
-              child: Image(
-                image: AssetImage("img/bulundum_logo.png"),
-              ),
-            ),
             Container(
               margin: EdgeInsets.only(bottom: 40),
               child: Row(

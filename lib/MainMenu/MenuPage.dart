@@ -12,15 +12,9 @@ class MainMenu extends StatelessWidget {
       appBar: AppBar(),
       drawer: mainDrawer(),
       body: Container(
-        margin: EdgeInsets.all(20),
+        margin: EdgeInsets.symmetric(vertical: 140,horizontal: 20),
         child: Column(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 20, bottom: 80),
-              child: Image(
-                image: AssetImage("img/bulundum_logo.png"),
-              ),
-            ),
             Container(
               margin: EdgeInsets.only(bottom: 40),
               child: SizedBox(

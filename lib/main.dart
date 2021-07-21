@@ -100,8 +100,8 @@ class _MyHomePageState extends State<MyHomePage>
               ),
             ),
             RaisedButton(onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SecondPage()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => LoginMain()));
             }),
             Expanded(
               child: Align(

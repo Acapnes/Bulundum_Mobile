@@ -50,15 +50,9 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
         margin: EdgeInsets.all(20),
         child: Column(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 30, bottom: 30),
-              child: Image(
-                image: AssetImage("img/bulundum_logo.png"),
-              ),
-            ),
             SizedBox(
-              width: MediaQuery.of(context).size.width - 50,
-              height: MediaQuery.of(context).size.height / 1.8,
+              width: MediaQuery.of(context).size.width - 40,
+              height: MediaQuery.of(context).size.height / 1.4,
               child: Container(
                 margin: EdgeInsets.all(20),
                 child: Center(

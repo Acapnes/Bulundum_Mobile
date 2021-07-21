@@ -18,17 +18,10 @@ class _QRBuluntuState extends State<QRBuluntu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: mainDrawer(),
       body: Container(
-        margin:EdgeInsets.all(20),
+        margin: EdgeInsets.symmetric(vertical: 125,horizontal: 20),
         child: Column(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 30, bottom: 40),
-              child: Image(
-                image: AssetImage("img/bulundum_logo.png"),
-              ),
-            ),
             Container(
               margin: EdgeInsets.only(bottom: 10),
               child: QrImage(
