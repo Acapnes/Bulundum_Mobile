@@ -26,6 +26,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   hexcolor: ^2.0.4
   shared_preferences:
+  permission_handler:
 
 
 dev_dependencies:
