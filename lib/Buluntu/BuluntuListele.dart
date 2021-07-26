@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:bulundum_mobile/Buluntu/BuluntuDetaylar.dart';
+import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainBuluntuList extends StatefulWidget {
 
@@ -13,87 +17,60 @@ class MainBuluntuList extends StatefulWidget {
 
 class _MainBuluntuListState extends State<MainBuluntuList> {
   int number;
+  List data;
 
-
-  Future getUserData() async {
-    var response =
-        await http.get(Uri.https('jsonplaceholder.typicode.com', 'users'));
+  Future<String> ListFoundItems() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var endpointUrl = 'https://www.myurl.com/api/v1/user';
+    Map<String, String> queryParams = {
+      'param1': 'sharedPreferences.get("sk1");',
+      'param2': 'sharedPreferences.get("sk2");'
+    };
+    var response = await http.get(Uri.parse("https://dev.bulundum.com/api/v3/founditems"),
+        headers: {
+          'Accept':'application/json',
+        });
     var jsonData = jsonDecode(response.body);
-    List<User> users = [];
-    for (var u in jsonData) {
-      User user = User(u["name"], u["email"], u["username"]);
-      users.add(user);
-    }
-    print(users.length);
-    return users;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this.ListFoundItems();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.search),
-        onPressed: () {},
-      ),
-      body: Container(
-        child: Card(
-          child: FutureBuilder(
-            future: getUserData(),
-            builder: (context, snapshot) {
-              if (snapshot.data == null) {
-                return Container(
-                  child: Center(
-                    child: Text("Loading.."),
-                  ),
-                );
-              } else {
-                return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, i) {
-                    return GestureDetector(
-                      onTap: () {
-                        number = i;
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                mainBuluntuDetaylar(number : number)));
-                      },
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(),
+        drawer: mainDrawer(),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.search),
+          onPressed: () {
+            ListFoundItems();
+          },
+        ),
+        body: ListView.builder(
+          itemCount: data == null ? 0 : data.length,
+          itemBuilder: (context,int index){
+            return Container(
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Card(
                       child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height / 8,
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.orangeAccent,
-                              blurRadius: 4,
-                              offset: Offset(4, 8), // Shadow position
-                            ),
-                          ],
-                        ),
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                        child: Container(
-                          child: ListTile(
-                            title: Text("Eşya No",style: TextStyle(color: Colors.white),),
-                            subtitle: Text(snapshot.data[i].name,style: TextStyle(color: Colors.white),),
-                            trailing: SizedBox(
-                              height: 100,
-                              width: 100,
-                              child: Image(
-                                image: AssetImage("img/bulundum_logo.png"),
-                              ),
-                            ),
-                          ),
-                        ),
+                          child : Text(data[0]["Slug"]),
+                        padding: EdgeInsets.all(20),
                       ),
-                    );
-                  },
-                );
-              }
-            },
-          ),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -101,7 +78,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
 }
 
 class User {
-  final String name, email, userName;
+  final String Id, Title, Slug;
 
-  User(this.name, this.email, this.userName);
+  User(this.Id, this.Title, this.Slug);
 }
