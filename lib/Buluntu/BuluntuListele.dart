@@ -20,17 +20,11 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
   List data;
 
   Future<String> ListFoundItems() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var endpointUrl = 'https://www.myurl.com/api/v1/user';
-    Map<String, String> queryParams = {
-      'param1': 'sharedPreferences.get("sk1");',
-      'param2': 'sharedPreferences.get("sk2");'
-    };
-    var response = await http.get(Uri.parse("https://dev.bulundum.com/api/v3/founditems"),
-        headers: {
-          'Accept':'application/json',
-        });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final uri = Uri.https("dev.bulundum.com", "/api/v3/founditems", {'sk1': prefs.get("sk1"), 'sk2': prefs.get("sk2")});
+    var response = await http.get(uri);
     var jsonData = jsonDecode(response.body);
+    data = jsonData["Records"];
   }
 
   @override
