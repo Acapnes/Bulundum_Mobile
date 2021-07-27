@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
 import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Login-Register/LoginPage.dart';
 import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
@@ -112,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage>
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SecondPage()));
+                              builder: (context) => MainBuluntuList()));
                     } else {
                       Navigator.push(
                           context,
