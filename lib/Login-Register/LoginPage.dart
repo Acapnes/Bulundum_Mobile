@@ -123,18 +123,23 @@ class _LoginMainState extends State<LoginMain> {
           body: ({
             'Username': emailController.text,
             'Password': passwordController.text,
+            'sk1' : sk1,
+            'sk2' : sk2,
           }));
       if (response.statusCode == 200) {
         Map<String,dynamic>res = jsonDecode(response.body);
-        if (res["err"] == 0) {
+        print(res);
+        if ((res["Success"]).toString() == "1") {
           SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('Username', emailController.text);
+          prefs.setString('Password', passwordController.text);
           prefs.setString('sk1', sk1);
           prefs.setString('sk2', sk2);
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => MainMenu()));
         } else {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(res["errtext"])));
+              .showSnackBar(SnackBar(content: Text("Wrong username or password")));
         }
       } else {
         ScaffoldMessenger.of(context)
@@ -144,5 +149,11 @@ class _LoginMainState extends State<LoginMain> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Please fill both fields")));
     }
+  }
+
+  SaveUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('Username', emailController.text);
+    prefs.setString('Password', passwordController.text);
   }
 }
