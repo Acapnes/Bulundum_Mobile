@@ -3,7 +3,6 @@ import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
 import 'package:bulundum_mobile/main.dart';
 import 'package:flutter/material.dart';
 
-
 class mainDrawer extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -31,13 +30,20 @@ class StateFulDrawer extends State {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image:
-                          AssetImage('img/bulundum_logo.png'),
+                          image: AssetImage('img/bulundum_logo.png'),
                           fit: BoxFit.cover,
                         ),
                       )),
-                  Container(margin: EdgeInsets.only(bottom: 10),child: Text("Bulundum",style: TextStyle(fontSize: 20,color: Colors.white),)),
-                  Text("*********@hotmail.com",style: TextStyle(fontSize: 18,color: Colors.white),),
+                  Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        "Bulundum",
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      )),
+                  Text(
+                    "*********@hotmail.com",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
                 ],
               ),
             ),
@@ -46,16 +52,16 @@ class StateFulDrawer extends State {
             leading: Icon(Icons.event_note),
             title: Text("Giriş Ekranı"),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyApp()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => MyApp()));
             },
           ),
           ListTile(
             leading: Icon(Icons.event_note),
             title: Text("Menü"),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MainMenu()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => MainMenu()));
             },
           ),
           ListTile(
