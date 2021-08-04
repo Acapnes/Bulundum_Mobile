@@ -20,6 +20,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
   int Selectedindex;
   List<Buluntu> buluntular = new List<Buluntu>();
   ScrollController _scrollController = ScrollController();
+  List data;
   int PageNumber = 1;
   bool first = true;
 
@@ -32,11 +33,19 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
     });
     var response = await http.get(uri);
     var jsonData = jsonDecode(response.body);
+    data = jsonData["Records"];
     var buluntudata = jsonData["Records"];
     List<Buluntu> buluntular = [];
     for (var buluntu in buluntudata) {
       Buluntu newBuluntu = Buluntu(
-          buluntu["Title"], buluntu["Slug"], buluntu["Id"], buluntu["Image"]);
+          buluntu["Title"],
+          buluntu["Slug"],
+          buluntu["Id"],
+          buluntu["Images"],
+          buluntu["StatusText"],
+          buluntu["PrivateDetails"],
+          buluntu["StorageId"],
+          buluntu["InventoryNo"]);
       buluntular.add(newBuluntu);
     }
     print(buluntular[10].Title);
@@ -86,6 +95,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
         appBar: AppBar(),
         drawer: mainDrawer(),
         body: Container(
+          margin: EdgeInsets.only(top: 20),
           child: FutureBuilder(
             future: ListFoundItems(),
             builder: (context, snapshot) {
@@ -144,10 +154,10 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                           ),
                         )
                       ],
-                      child: Card(
+                      child: Container(
                         margin: EdgeInsets.all(10),
                         child: Container(
-                          height: 125,
+                          height: 190,
                           decoration: BoxDecoration(
                               border: Border.all(
                                   color: Colors.orangeAccent, width: 3),
@@ -167,16 +177,37 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                                 child: ListTile(
                                   title:
                                       Text("Eşya no : " + snapshot.data[i].Id),
-                                  subtitle:
-                                      Text("Slug  : " + snapshot.data[i].Slug),
-                                  trailing: snapshot.data[i].Photo == null
+                                  subtitle: snapshot.data[i].Images == null
+                                      ? Text(
+                                          "Envanter no  : " +
+                                              snapshot.data[i].InventoryNo,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        )
+                                      : Text("Null"),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.center,
+                                child: ListTile(
+                                  title: Text(
+                                      "Eşya durumu : " + snapshot.data[i].Type),
+                                  subtitle: Text(
+                                      "Bulunduğu depo  : " +
+                                          snapshot.data[i].StorageId,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15)),
+                                  trailing: snapshot.data[i].Images == null
                                       ? Image(
+                                          image: NetworkImage(
+                                              snapshot.data[i].Images))
+                                      : Image(
                                           image: AssetImage("img/icon.png"),
                                           height: 50,
                                           width: 50,
-                                        )
-                                      : Image(
-                                          image: AssetImage("img/icon.png")),
+                                        ),
                                 ),
                               ),
                             ],
@@ -200,7 +231,16 @@ class Buluntu {
 
   String Slug;
 
-  String Photo;
+  String Type;
 
-  Buluntu(this.Title, this.Slug, this.Id, this.Photo);
+  String StorageId;
+
+  String InventoryNo;
+
+  String PrivateDetails;
+
+  List Images;
+
+  Buluntu(this.Title, this.Slug, this.Id, this.Images, this.Type,
+      this.PrivateDetails, this.StorageId, this.InventoryNo);
 }
