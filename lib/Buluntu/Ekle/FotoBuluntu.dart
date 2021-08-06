@@ -21,25 +21,15 @@ class FotoBuluntu extends StatefulWidget {
 }
 
 class _FotoBuluntuState extends State<FotoBuluntu> {
-  File _image;
-  String base64Image;
+  var image;
+  List imageArray = [];
 
-  final imagePicker = ImagePicker();
-
-  Future getImage() async {
-    final image = await imagePicker.getImage(source: ImageSource.camera);
+  getImage() async {
+    image = await ImagePicker.pickImage(source: ImageSource.camera);
+    imageArray.add(image);
     setState(() {
-      _image = File(image.path);
+      imageArray;
     });
-  }
-
-  Future upload() async {
-    var response = await http.post(Uri.parse("https://reqres.in/api/login"), body: {
-      "image": base64Image,
-    });
-    if (response.statusCode == 200) {
-      response.body;
-    }
   }
 
   @override
@@ -54,20 +44,26 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
               width: MediaQuery.of(context).size.width - 40,
               height: MediaQuery.of(context).size.height / 1.4,
               child: Container(
-                margin: EdgeInsets.all(20),
-                child: Center(
-                  child: _image == null
-                      ? Text(
-                          "Fotoğraf Seçilmedi",
-                          style: TextStyle(color: Colors.white70, fontSize: 25),
-                        )
-                      : Image.file(_image),
-                ),
+
+                child: imageArray.isEmpty
+                    ? Center(
+                        child: Text("Fotoğraf Seçilmedi"),
+                      )
+                    : Container(
+                        child: GridView.count(
+                          crossAxisCount: 2,
+                          children: List.generate(imageArray.length, (index) {
+                            var img = imageArray[index];
+                            return Container(margin: EdgeInsets.all(10),child: Image.file(img));
+                          }),
+                        ),
+                      ),
               ),
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Container(
+                margin: EdgeInsets.only(top: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -92,7 +88,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                           ),
                           color: Colors.orangeAccent,
                           onPressed: () {
-                            upload();
+                            print(imageArray[2].toString());
                           }),
                     ),
                     SizedBox(
@@ -104,9 +100,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                         ),
                         color: Colors.blue,
                         onPressed: () {
-                          setState(() {
-                            _image = null;
-                          });
+                          setState(() {});
                         },
                       ),
                     ),
