@@ -1,5 +1,4 @@
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
-import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/motiontabbar.dart';

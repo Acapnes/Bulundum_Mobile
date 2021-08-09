@@ -17,11 +17,11 @@ class MainBuluntuList extends StatefulWidget {
 }
 
 class _MainBuluntuListState extends State<MainBuluntuList> {
-  int Selectedindex;
   List<Buluntu> buluntular = new List<Buluntu>();
   ScrollController _scrollController = ScrollController();
   List data;
   int PageNumber = 1;
+  String dataController, _dataController;
   bool first = true;
 
   Future<List<Buluntu>> ListFoundItems() async {
@@ -39,16 +39,14 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
     for (var buluntu in buluntudata) {
       Buluntu newBuluntu = Buluntu(
           buluntu["Title"],
-          buluntu["Slug"],
           buluntu["Id"],
           buluntu["Images"],
           buluntu["StatusText"],
           buluntu["PrivateDetails"],
-          buluntu["StorageId"],
+          buluntu["StoragePlace"]["Title"],
           buluntu["InventoryNo"]);
       buluntular.add(newBuluntu);
     }
-    print(buluntular[10].Title);
     return buluntular;
   }
 
@@ -58,11 +56,16 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
     ListFoundItems();
   }
 
+  toTop() async {
+    _scrollController.animateTo(0,
+        duration: Duration(milliseconds: 1250), curve: Curves.easeInOut);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         bottomNavigationBar: MotionTabBar(
-          labels: ["Eski Buluntular", "Ara", "Yeni Buluntular"],
+          labels: ["Önceki Buluntular", "Ara", "Sonraki Buluntular"],
           initialSelectedTab: "Ara",
           tabIconColor: Colors.green,
           tabSelectedColor: Colors.red,
@@ -70,18 +73,12 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
             print(value);
             setState(() {});
             if (value == 2) {
-              Future.delayed(
-                  const Duration(seconds: 2),
-                  () => ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Sonraki Buluntular Getirildi"))));
+              toTop();
               PageNumber++;
             } else if (value == 1) {
               print("Arama Kodu");
             } else if (PageNumber >= 2) {
-              Future.delayed(
-                  const Duration(seconds: 2),
-                  () => ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Önceki Buluntular Getirildi"))));
+              toTop();
               PageNumber--;
             }
           },
@@ -107,9 +104,9 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                 );
               } else {
                 return ListView.builder(
+                  controller: _scrollController,
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, i) {
-                    Selectedindex = i;
                     return Slidable(
                       actionPane: SlidableScrollActionPane(),
                       actions: <Widget>[
@@ -123,12 +120,13 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                             print(snapshot.data[i].Title);
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
+                            padding:
+                                const EdgeInsets.only(left: 12.0, right: 8),
                             child: Container(
-                              height: 125,
+                              height: 200,
                               decoration: BoxDecoration(
                                   color: Colors.greenAccent,
-                                  borderRadius: BorderRadius.circular(20)),
+                                  borderRadius: BorderRadius.circular(10)),
                               child: Icon(
                                 Icons.more,
                                 color: Colors.white,
@@ -140,12 +138,12 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                       ],
                       secondaryActions: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.only(right: 12.0),
+                          padding: const EdgeInsets.only(right: 12.0, left: 8),
                           child: Container(
-                            height: 125,
+                            height: 200,
                             decoration: BoxDecoration(
                                 color: Colors.redAccent,
-                                borderRadius: BorderRadius.circular(20)),
+                                borderRadius: BorderRadius.circular(10)),
                             child: Icon(
                               Icons.delete,
                               color: Colors.white,
@@ -154,14 +152,10 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                           ),
                         )
                       ],
-                      child: Container(
-                        margin: EdgeInsets.all(10),
+                      child: Card(
                         child: Container(
-                          height: 190,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Colors.orangeAccent, width: 3),
-                              borderRadius: BorderRadius.circular(20)),
+                          margin: EdgeInsets.all(10),
+                          height: 185,
                           child: Column(
                             children: [
                               Padding(
@@ -229,8 +223,6 @@ class Buluntu {
 
   String Id;
 
-  String Slug;
-
   String Type;
 
   String StorageId;
@@ -241,6 +233,6 @@ class Buluntu {
 
   List Images;
 
-  Buluntu(this.Title, this.Slug, this.Id, this.Images, this.Type,
-      this.PrivateDetails, this.StorageId, this.InventoryNo);
+  Buluntu(this.Title, this.Id, this.Images, this.Type, this.PrivateDetails,
+      this.StorageId, this.InventoryNo);
 }
