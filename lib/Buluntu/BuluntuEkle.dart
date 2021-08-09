@@ -11,18 +11,11 @@ class mainBuluntuEkle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: mainDrawer(),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.all(20),
+          margin: EdgeInsets.only(top: 75, left: 30, right: 30),
           child: Column(
             children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(top: 20, bottom: 80),
-                child: Image(
-                  image: AssetImage("img/bulundum_logo.png"),
-                ),
-              ),
               Container(
                 margin: EdgeInsets.only(bottom: 30),
                 child: SizedBox(
@@ -31,16 +24,19 @@ class mainBuluntuEkle extends StatelessWidget {
                   child: RaisedButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.orangeAccent,width: 8)
-                    ),
+                        side: BorderSide(color: Colors.orangeAccent, width: 8)),
                     color: Colors.blueAccent,
                     child: ListTile(
-                      title: Text("Normal Buluntu Ekle",style: TextStyle(color: Colors.white,fontSize: 20),),
-                      trailing: Icon(Icons.view_list,size: 60,),
+                      title: Text(
+                        "Normal Buluntu Ekle",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      trailing: Icon(
+                        Icons.view_list,
+                        size: 60,
+                      ),
                     ),
-                    onPressed: (){
-                      print("1");
-                    },
+                    onPressed: () {},
                   ),
                 ),
               ),
@@ -52,14 +48,19 @@ class mainBuluntuEkle extends StatelessWidget {
                   child: RaisedButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.orangeAccent,width: 8)
-                    ),
+                        side: BorderSide(color: Colors.orangeAccent, width: 8)),
                     color: Colors.blueAccent,
                     child: ListTile(
-                      title: Text("Fotoğrafla Buluntu Ekle",style: TextStyle(color: Colors.white,fontSize: 20),),
-                      trailing: Icon(Icons.add_a_photo,size: 60,),
+                      title: Text(
+                        "Fotoğrafla Buluntu Ekle",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      trailing: Icon(
+                        Icons.add_a_photo,
+                        size: 60,
+                      ),
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -76,14 +77,19 @@ class mainBuluntuEkle extends StatelessWidget {
                   child: RaisedButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.orangeAccent,width: 8)
-                    ),
+                        side: BorderSide(color: Colors.orangeAccent, width: 8)),
                     color: Colors.blueAccent,
                     child: ListTile(
-                      title: Text("Ses Kaydı ile Buluntu Ekle",style: TextStyle(color: Colors.white,fontSize: 20),),
-                      trailing: Icon(Icons.mic,size: 60,),
+                      title: Text(
+                        "Ses Kaydı ile Buluntu Ekle",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      trailing: Icon(
+                        Icons.mic,
+                        size: 60,
+                      ),
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       print("1");
                     },
                   ),
@@ -97,18 +103,21 @@ class mainBuluntuEkle extends StatelessWidget {
                   child: RaisedButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.orangeAccent,width: 8)
-                    ),
+                        side: BorderSide(color: Colors.orangeAccent, width: 8)),
                     color: Colors.blueAccent,
                     child: ListTile(
-                      title: Text("QR Kod ile Buluntu Ekle",style: TextStyle(color: Colors.white,fontSize: 20),),
-                      trailing: Icon(Icons.qr_code,size: 60,),
+                      title: Text(
+                        "QR Kod ile Buluntu Ekle",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      trailing: Icon(
+                        Icons.qr_code,
+                        size: 60,
+                      ),
                     ),
-                    onPressed: (){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => QRBuluntu()));
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => QRBuluntu()));
                     },
                   ),
                 ),

@@ -24,13 +24,13 @@ class StateFulDrawer extends State {
               child: Column(
                 children: <Widget>[
                   Container(
-                      width: 230,
-                      height: 230,
+                      width: 150,
+                      height: 150,
                       margin: EdgeInsets.only(top: 10, bottom: 15),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image: AssetImage('img/bulundum_logo.png'),
+                          image: AssetImage('img/icon.png'),
                           fit: BoxFit.cover,
                         ),
                       )),
