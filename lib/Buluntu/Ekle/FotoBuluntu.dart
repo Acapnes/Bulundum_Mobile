@@ -24,7 +24,6 @@ class FotoBuluntu extends StatefulWidget {
 
 class _FotoBuluntuState extends State<FotoBuluntu> {
   ScrollController _scrollController = ScrollController();
-  double ht = 0, wt = 0;
   var image;
   List imageArray = [];
   List<AltEsyaC> AltArray = [];
@@ -199,11 +198,6 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                 onTap: () {
                                   print(AltArray[index].subimageArray);
                                   setState(() {
-                                    if (index == 0) {
-                                      ht = 0;
-                                      wt = 0;
-
-                                    }
                                   });
                                 },
                                 child: Container(
