@@ -76,7 +76,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.keyboard_arrow_up_outlined),
-            title: Text("Ana eşyaya dön"),
+            title: Text("Ana eşyaya "),
             backgroundColor: Colors.blueAccent,
           ),
           BottomNavigationBarItem(
