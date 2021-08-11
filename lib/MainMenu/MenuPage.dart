@@ -10,9 +10,9 @@ class MainMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: mainDrawer(),
+      drawer: MainDrawer(),
       body: Container(
-        margin: EdgeInsets.only(top: 100,left: 40,right: 40),
+        margin: EdgeInsets.only(top: 100, left: 40, right: 40),
         child: Column(
           children: <Widget>[
             Container(
@@ -23,12 +23,12 @@ class MainMenu extends StatelessWidget {
                 child: RaisedButton(
                   color: Color(0xFF0078CE),
                   child: Text("Bir Şey Mi Buldunuz?",
-                      style: TextStyle(color: Colors.white,fontSize: 20)),
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => mainBuluntuEkle()));
+                            builder: (context) => MainBuluntuEkle()));
                   },
                 ),
               ),
@@ -41,12 +41,12 @@ class MainMenu extends StatelessWidget {
                 child: RaisedButton(
                   color: Color(0xFFF9B217),
                   child: Text("Bir Şey Mi Kaybettiniz?",
-                      style: TextStyle(color: Colors.white,fontSize: 20)),
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => mainBuluntuEkle()));
+                            builder: (context) => MainBuluntuEkle()));
                   },
                 ),
               ),
@@ -59,7 +59,7 @@ class MainMenu extends StatelessWidget {
                   child: RaisedButton(
                     color: Color(0xFFF9B217),
                     child: Text("Buluntuları Listele",
-                        style: TextStyle(color: Colors.white,fontSize: 20)),
+                        style: TextStyle(color: Colors.white, fontSize: 20)),
                     onPressed: () {
                       Navigator.push(
                           context,

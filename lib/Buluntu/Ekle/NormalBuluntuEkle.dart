@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
-class mainNBEkle extends StatefulWidget {
-  const mainNBEkle({Key key}) : super(key: key);
+class MainNBEkle extends StatefulWidget {
+  const MainNBEkle({Key key}) : super(key: key);
 
   @override
-  _mainNBEkleState createState() => _mainNBEkleState();
+  _MainNBEkleState createState() => _MainNBEkleState();
 }
 
-class _mainNBEkleState extends State<mainNBEkle> {
+class _MainNBEkleState extends State<MainNBEkle> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
-    );
+    return Scaffold();
   }
 }

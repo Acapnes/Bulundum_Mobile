@@ -9,19 +9,17 @@ class RegisterMain extends StatefulWidget {
 }
 
 class _RegisterMainState extends State<RegisterMain> {
-  final NameController = TextEditingController();
-  final LastNameController = TextEditingController();
-  final IdController = TextEditingController();
-  final PwController = TextEditingController();
-
-  String _name;
+  final nameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final idController = TextEditingController();
+  final pwController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-        margin: EdgeInsets.only(left: 20,right: 20,top: 75),
+        margin: EdgeInsets.only(left: 20, right: 20, top: 75),
         child: Column(
           children: <Widget>[
             Container(
@@ -40,7 +38,7 @@ class _RegisterMainState extends State<RegisterMain> {
                         TextField(
                           autofocus: true,
                           textInputAction: TextInputAction.next,
-                          controller: NameController,
+                          controller: nameController,
                           decoration: InputDecoration(hintText: ''),
                         ),
                       ],
@@ -56,7 +54,7 @@ class _RegisterMainState extends State<RegisterMain> {
                                 style: TextStyle(fontSize: 16))),
                         TextField(
                           textInputAction: TextInputAction.next,
-                          controller: LastNameController,
+                          controller: lastNameController,
                           decoration: InputDecoration(hintText: ''),
                         ),
                       ],
@@ -79,7 +77,7 @@ class _RegisterMainState extends State<RegisterMain> {
                                 style: TextStyle(fontSize: 16))),
                         TextField(
                           textInputAction: TextInputAction.next,
-                          controller: IdController,
+                          controller: idController,
                           decoration: InputDecoration(hintText: ''),
                         ),
                       ],
@@ -95,7 +93,7 @@ class _RegisterMainState extends State<RegisterMain> {
                                 Text("Şifre", style: TextStyle(fontSize: 16))),
                         TextField(
                           textInputAction: TextInputAction.done,
-                          controller: PwController,
+                          controller: pwController,
                           decoration: InputDecoration(hintText: ''),
                         ),
                       ],

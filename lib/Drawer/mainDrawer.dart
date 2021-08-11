@@ -3,7 +3,7 @@ import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
 import 'package:bulundum_mobile/main.dart';
 import 'package:flutter/material.dart';
 
-class mainDrawer extends StatefulWidget {
+class MainDrawer extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return StateFulDrawer();

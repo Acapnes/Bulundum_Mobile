@@ -1,4 +1,3 @@
-import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -10,8 +9,7 @@ class QRBuluntu extends StatefulWidget {
 }
 
 class _QRBuluntuState extends State<QRBuluntu> {
-
-  TextEditingController _QrController = new TextEditingController();
+  TextEditingController _qrController = new TextEditingController();
   String data;
 
   @override
@@ -19,31 +17,32 @@ class _QRBuluntuState extends State<QRBuluntu> {
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 125,horizontal: 20),
+        margin: EdgeInsets.symmetric(vertical: 125, horizontal: 20),
         child: Column(
           children: <Widget>[
             Container(
               margin: EdgeInsets.only(bottom: 10),
               child: QrImage(
                 version: QrVersions.auto,
-                size: (MediaQuery.of(context).size.width/1.3),
+                size: (MediaQuery.of(context).size.width / 1.3),
                 data: '$data',
               ),
             ),
             TextFormField(
-              controller: _QrController,
+              controller: _qrController,
               decoration: InputDecoration(
                 border: new OutlineInputBorder(
                   borderRadius: new BorderRadius.circular(10.0),
                   borderSide: new BorderSide(),
                 ),
-                hintText: "Veriyi Giriniz",hintStyle: TextStyle(fontSize: 20),
+                hintText: "Veriyi Giriniz",
+                hintStyle: TextStyle(fontSize: 20),
               ),
             ),
             RaisedButton(
-              onPressed: (){
+              onPressed: () {
                 setState(() {
-                  data = _QrController.text;
+                  data = _qrController.text;
                 });
               },
               child: Text("Tamamla"),

@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:bulundum_mobile/Buluntu/BuluntuDetaylar.dart';
 import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 import 'package:motion_tab_bar/motiontabbar.dart';
@@ -17,19 +14,19 @@ class MainBuluntuList extends StatefulWidget {
 }
 
 class _MainBuluntuListState extends State<MainBuluntuList> {
-  List<Buluntu> buluntular = new List<Buluntu>();
+  List<Buluntu> buluntular = [];
   ScrollController _scrollController = ScrollController();
   List data;
-  int PageNumber = 1;
-  String dataController, _dataController;
+  int pageNumber = 1;
+  String dataController;
   bool first = true;
 
-  Future<List<Buluntu>> ListFoundItems() async {
+  Future<List<Buluntu>> listFoundItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final uri = Uri.https("dev.bulundum.com", "/api/v3/founditems", {
       'sk1': prefs.get("sk1"),
       'sk2': prefs.get("sk2"),
-      'Page': "$PageNumber"
+      'Page': pageNumber,
     });
     var response = await http.get(uri);
     var jsonData = jsonDecode(response.body);
@@ -53,7 +50,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
   @override
   void initState() {
     super.initState();
-    ListFoundItems();
+    listFoundItems();
   }
 
   toTop() async {
@@ -74,12 +71,12 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
             setState(() {});
             if (value == 2) {
               toTop();
-              PageNumber++;
+              pageNumber++;
             } else if (value == 1) {
               print("Arama Kodu");
-            } else if (PageNumber >= 2) {
+            } else if (pageNumber >= 2) {
               toTop();
-              PageNumber--;
+              pageNumber--;
             }
           },
           icons: [
@@ -90,11 +87,11 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
           textStyle: TextStyle(color: Colors.red),
         ),
         appBar: AppBar(),
-        drawer: mainDrawer(),
+        drawer: MainDrawer(),
         body: Container(
           margin: EdgeInsets.only(top: 20),
           child: FutureBuilder(
-            future: ListFoundItems(),
+            future: listFoundItems(),
             builder: (context, snapshot) {
               if (snapshot.data == null) {
                 return Container(
@@ -116,7 +113,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                                 context,
                                 new MaterialPageRoute(
                                     builder: (context) =>
-                                        mainBuluntuDetaylar(snapshot.data[i])));
+                                        MainBuluntuDetaylar(snapshot.data[i])));
                             print(snapshot.data[i].Title);
                           },
                           child: Padding(
@@ -219,20 +216,13 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
 }
 
 class Buluntu {
-  String Title;
-
-  String Id;
-
-  String Type;
-
-  String StorageId;
-
-  String InventoryNo;
-
-  String PrivateDetails;
-
-  List Images;
-
-  Buluntu(this.Title, this.Id, this.Images, this.Type, this.PrivateDetails,
-      this.StorageId, this.InventoryNo);
+  String title;
+  String id;
+  String type;
+  String storageId;
+  String inventoryNo;
+  String privateDetails;
+  List images;
+  Buluntu(this.title, this.id, this.images, this.type, this.privateDetails,
+      this.storageId, this.inventoryNo);
 }

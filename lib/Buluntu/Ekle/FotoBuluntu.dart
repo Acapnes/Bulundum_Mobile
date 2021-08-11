@@ -1,10 +1,6 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:motion_tab_bar/motiontabbar.dart';
 
 class MainFoto extends StatelessWidget {
   @override
@@ -26,22 +22,19 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
   ScrollController _scrollController = ScrollController();
   var image;
   List imageArray = [];
-  List<AltEsyaC> AltArray = [];
-  int AltEsyaCounter = 0, _currentindex = 0, _activeindex = 0;
+  int _activeindex = 0;
 
   getImage() async {
     image = await ImagePicker.pickImage(source: ImageSource.camera);
-    imageArray.add(image);
     setState(() {
-      imageArray;
-      AltArray[0].subimageArray = imageArray[0];
+      imageArray[_activeindex].add(image);
     });
   }
 
-  AltEsyaEkle() {
+  altEsyaEkle() {
     setState(() {
-      this.AltEsyaCounter++;
-      AltArray.add(new AltEsyaC());
+      imageArray.add([]);
+      _activeindex += 1;
     });
   }
 
@@ -54,39 +47,36 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentindex,
+        currentIndex: _activeindex,
         type: BottomNavigationBarType.shifting,
         iconSize: 25,
         onTap: (index) {
           setState(() {
-            _currentindex = index;
+            _activeindex = index;
           });
-          if (index == 2) {
-            AltEsyaEkle();
-          }
-          if (index == 3) {
-            _activeindex++;
+          if (index == -1) {
+            altEsyaEkle();
           }
         },
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.keyboard_arrow_left_outlined),
-            title: Text("Önceki Alt Eşya"),
+            label: "Önceki Alt Eşya",
             backgroundColor: Colors.blueAccent,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.keyboard_arrow_up_outlined),
-            title: Text("Ana Eşyaya Dön"),
+            label: "Ana Eşyaya Dön",
             backgroundColor: Colors.blueAccent,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            title: Text("Yeni Alt Eşya"),
+            label: "Yeni Alt Eşya",
             backgroundColor: Colors.blueAccent,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.keyboard_arrow_right_outlined),
-            title: Text("Önceki Alt Eşya"),
+            label: "Önceki Alt Eşya",
             backgroundColor: Colors.blueAccent,
           ),
         ],
@@ -109,31 +99,31 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                       border: Border.all(color: Colors.blueAccent, width: 4)),
                   child: imageArray.isEmpty
                       ? Center(
-                    child: Text(
-                      "Fotoğraf Seçilmedi",
-                      style: TextStyle(fontSize: 22),
-                    ),
-                  )
+                          child: Text(
+                            "Fotoğraf Seçilmedi",
+                            style: TextStyle(fontSize: 22),
+                          ),
+                        )
                       : SingleChildScrollView(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.blueAccent, width: 1)),
-                      child: GridView.count(
-                        shrinkWrap: true,
-                        primary: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 2,
-                        children:
-                        List.generate(imageArray.length, (index) {
-                          var img = imageArray[index];
-                          return Container(
-                              margin: EdgeInsets.all(10),
-                              child: Image.file(img));
-                        }),
-                      ),
-                    ),
-                  ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.blueAccent, width: 1)),
+                            child: GridView.count(
+                              shrinkWrap: true,
+                              primary: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              crossAxisCount: 2,
+                              children:
+                                  List.generate(imageArray.length, (index) {
+                                var img = imageArray[index];
+                                return Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: Image.file(img));
+                              }),
+                            ),
+                          ),
+                        ),
                 ),
               ),
               SizedBox(
@@ -144,26 +134,33 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                     children: [
                       SizedBox(
                         height: 50,
-                        child: RaisedButton(
+                        child: ElevatedButton(
                             child: Icon(
                               Icons.add_a_photo,
                               size: 40,
                             ),
-                            color: Colors.orangeAccent,
+                            style: ButtonStyle(backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                                    (Set<MaterialState> states) {
+                              return Colors.orangeAccent;
+                            })),
                             onPressed: () {
                               getImage();
                             }),
                       ),
                       SizedBox(
                         height: 50,
-                        child: RaisedButton(
+                        child: ElevatedButton(
                             child: Icon(
                               Icons.upload_file,
                               size: 40,
                             ),
-                            color: Colors.orangeAccent,
-                            onPressed: () {
-                            }),
+                            style: ButtonStyle(backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                                    (Set<MaterialState> states) {
+                              return Colors.orangeAccent;
+                            })),
+                            onPressed: () {}),
                       ),
                     ],
                   ),
@@ -176,78 +173,77 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   controller: _scrollController,
-                  itemCount: AltArray.length == null ? 0 : AltArray.length,
+                  itemCount: imageArray[_activeindex].length,
                   itemBuilder: (context, index) {
                     return Container(
                         child: Card(
-                          child: Column(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(left: 15, top: 15),
-                                    child: Align(
-                                      child: Text(
-                                        (index + 1).toString() + ". Alt Eşya",
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ),
+                              Container(
+                                margin: EdgeInsets.only(left: 15, top: 15),
+                                child: Align(
+                                  child: Text(
+                                    (index + 1).toString() + ". Alt Eşya",
+                                    style: TextStyle(fontSize: 16),
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      print(AltArray[index].subimageArray);
-                                      setState(() {
-                                      });
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.only(right: 15, top: 15),
-                                      child: Align(
-                                          alignment: Alignment.topRight,
-                                          child: Icon(
-                                            Icons.cancel,
-                                            size: 35,
-                                            color: Colors.orangeAccent,
-                                          )),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width - 40,
-                                height: MediaQuery.of(context).size.height - 350,
+                              GestureDetector(
+                                onTap: () {
+                                  print(imageArray[_activeindex]);
+                                  setState(() {});
+                                },
                                 child: Container(
-                                  margin: EdgeInsets.only(bottom: 20),
-                                  child: imageArray.isEmpty
-                                      ? Center(
-                                    child: Text(
-                                      "Fotoğraf Seçilmedi",
-                                      style: TextStyle(fontSize: 22),
-                                    ),
-                                  )
-                                      : SingleChildScrollView(
-                                    child: Container(
-                                      child: GridView.count(
-                                        shrinkWrap: true,
-                                        primary: true,
-                                        physics:
-                                        const NeverScrollableScrollPhysics(),
-                                        crossAxisCount: 2,
-                                        children: List.generate(
-                                            imageArray.length, (index) {
-                                          var img = imageArray[index];
-                                          return Container(
-                                              margin: EdgeInsets.all(10),
-                                              child: Image.file(img));
-                                        }),
-                                      ),
-                                    ),
-                                  ),
+                                  margin: EdgeInsets.only(right: 15, top: 15),
+                                  child: Align(
+                                      alignment: Alignment.topRight,
+                                      child: Icon(
+                                        Icons.cancel,
+                                        size: 35,
+                                        color: Colors.orangeAccent,
+                                      )),
                                 ),
                               ),
                             ],
                           ),
-                        ));
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width - 40,
+                            height: MediaQuery.of(context).size.height - 350,
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 20),
+                              child: imageArray.isEmpty
+                                  ? Center(
+                                      child: Text(
+                                        "Fotoğraf Seçilmedi",
+                                        style: TextStyle(fontSize: 22),
+                                      ),
+                                    )
+                                  : SingleChildScrollView(
+                                      child: Container(
+                                        child: GridView.count(
+                                          shrinkWrap: true,
+                                          primary: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          crossAxisCount: 2,
+                                          children: List.generate(
+                                              imageArray.length, (index) {
+                                            var img = imageArray[index];
+                                            return Container(
+                                                margin: EdgeInsets.all(10),
+                                                child: Image.file(img));
+                                          }),
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ));
                   },
                 ),
               ),
@@ -259,7 +255,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
   }
 }
 
-class AltEsyaC{
+class AltEsyaC {
   String name;
 
   List subimageArray = [];

@@ -1,7 +1,6 @@
 import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Login-Register/RegisterPage.dart';
 import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
-import 'package:bulundum_mobile/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -16,8 +15,7 @@ class LoginMain extends StatefulWidget {
 }
 
 class _LoginMainState extends State<LoginMain> {
-
-  String sk1="",sk2="";
+  String sk1 = "", sk2 = "";
 
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
@@ -28,9 +26,9 @@ class _LoginMainState extends State<LoginMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: mainDrawer(),
+      drawer: MainDrawer(),
       body: Container(
-        margin: EdgeInsets.only(left: 20,right: 20,top: 75),
+        margin: EdgeInsets.only(left: 20, right: 20, top: 75),
         child: Form(
           child: Column(
             children: <Widget>[
@@ -64,9 +62,7 @@ class _LoginMainState extends State<LoginMain> {
                       keyboardType: TextInputType.visiblePassword,
                       controller: passwordController,
                       decoration: InputDecoration(hintText: ''),
-                      onSubmitted: (term){
-
-                      },
+                      onSubmitted: (term) {},
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 40),
@@ -102,7 +98,9 @@ class _LoginMainState extends State<LoginMain> {
                           ),
                           onPressed: () {
                             Navigator.push(
-                                context, MaterialPageRoute(builder: (context) => RegisterMain()));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterMain()));
                           },
                         ),
                       ),
@@ -119,31 +117,29 @@ class _LoginMainState extends State<LoginMain> {
 
   Future<void> login() async {
     if (passwordController.text.isNotEmpty && emailController.text.isNotEmpty) {
-      var response = await http.post(Uri.parse("https://dev.bulundum.com/api/v3/login"),
-          body: ({
-            'Username': emailController.text,
-            'Password': passwordController.text,
-            'sk1' : sk1,
-            'sk2' : sk2,
-          }));
+      var response =
+          await http.post(Uri.parse("https://dev.bulundum.com/api/v3/login"),
+              body: ({
+                'Username': emailController.text,
+                'Password': passwordController.text,
+              }));
       if (response.statusCode == 200) {
-        Map<String,dynamic>res = jsonDecode(response.body);
+        Map<String, dynamic> res = jsonDecode(response.body);
         print(res);
-        if ((res["Success"]).toString() == "1") {
+        if ((res["err"]) == 0) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('Username', emailController.text);
-          prefs.setString('Password', passwordController.text);
           prefs.setString('sk1', sk1);
           prefs.setString('sk2', sk2);
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => MainMenu()));
         } else {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Wrong username or password")));
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Wrong username or password")));
         }
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Communication with server failed. Try again in a few minutes.")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                "Communication with server failed. Try again in a few minutes.")));
       }
     } else {
       ScaffoldMessenger.of(context)
@@ -151,7 +147,7 @@ class _LoginMainState extends State<LoginMain> {
     }
   }
 
-  SaveUser() async {
+  saveUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('Username', emailController.text);
     prefs.setString('Password', passwordController.text);

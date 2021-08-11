@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/motiontabbar.dart';
 
-class mainBuluntuDetaylar extends StatelessWidget {
+class MainBuluntuDetaylar extends StatelessWidget {
   final Buluntu buluntu;
 
-  mainBuluntuDetaylar(this.buluntu);
+  MainBuluntuDetaylar(this.buluntu);
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class mainBuluntuDetaylar extends StatelessWidget {
                       ),
                       child: Center(
                           child: Text(
-                        buluntu.Title,
+                        buluntu.title,
                         style: TextStyle(fontSize: 20),
                       )),
                     ),
@@ -81,7 +81,7 @@ class mainBuluntuDetaylar extends StatelessWidget {
                         subtitle: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            buluntu.Id,
+                            buluntu.id,
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
@@ -96,7 +96,7 @@ class mainBuluntuDetaylar extends StatelessWidget {
                         subtitle: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            buluntu.PrivateDetails,
+                            buluntu.privateDetails,
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),

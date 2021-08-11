@@ -1,11 +1,10 @@
 import 'package:bulundum_mobile/Buluntu/Ekle/FotoBuluntu.dart';
 import 'package:bulundum_mobile/Buluntu/Ekle/QRBuluntu.dart';
-import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class mainBuluntuEkle extends StatelessWidget {
-  const mainBuluntuEkle({Key key}) : super(key: key);
+class MainBuluntuEkle extends StatelessWidget {
+  const MainBuluntuEkle({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
