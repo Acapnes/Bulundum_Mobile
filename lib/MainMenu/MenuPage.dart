@@ -20,8 +20,7 @@ class MainMenu extends StatelessWidget {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 6,
-                child: RaisedButton(
-                  color: Color(0xFF0078CE),
+                child: ElevatedButton(
                   child: Text("Bir Şey Mi Buldunuz?",
                       style: TextStyle(color: Colors.white,fontSize: 20)),
                   onPressed: () {
@@ -38,8 +37,7 @@ class MainMenu extends StatelessWidget {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 6,
-                child: RaisedButton(
-                  color: Color(0xFFF9B217),
+                child: ElevatedButton(
                   child: Text("Bir Şey Mi Kaybettiniz?",
                       style: TextStyle(color: Colors.white,fontSize: 20)),
                   onPressed: () {
@@ -56,8 +54,7 @@ class MainMenu extends StatelessWidget {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 6,
-                  child: RaisedButton(
-                    color: Color(0xFFF9B217),
+                  child: ElevatedButton(
                     child: Text("Buluntuları Listele",
                         style: TextStyle(color: Colors.white,fontSize: 20)),
                     onPressed: () {
