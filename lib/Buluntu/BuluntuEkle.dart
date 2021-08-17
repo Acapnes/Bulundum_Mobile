@@ -1,6 +1,5 @@
 import 'package:bulundum_mobile/Buluntu/Ekle/FotoBuluntu.dart';
 import 'package:bulundum_mobile/Buluntu/Ekle/QRBuluntu.dart';
-import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -21,11 +20,7 @@ class mainBuluntuEkle extends StatelessWidget {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 7,
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.orangeAccent, width: 8)),
-                    color: Colors.blueAccent,
+                  child: ElevatedButton(
                     child: ListTile(
                       title: Text(
                         "Normal Buluntu Ekle",
@@ -45,11 +40,7 @@ class mainBuluntuEkle extends StatelessWidget {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 7,
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.orangeAccent, width: 8)),
-                    color: Colors.blueAccent,
+                  child: ElevatedButton(
                     child: ListTile(
                       title: Text(
                         "Fotoğrafla Buluntu Ekle",
@@ -74,11 +65,7 @@ class mainBuluntuEkle extends StatelessWidget {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 7,
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.orangeAccent, width: 8)),
-                    color: Colors.blueAccent,
+                  child: ElevatedButton(
                     child: ListTile(
                       title: Text(
                         "Ses Kaydı ile Buluntu Ekle",
@@ -100,11 +87,7 @@ class mainBuluntuEkle extends StatelessWidget {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 7,
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.orangeAccent, width: 8)),
-                    color: Colors.blueAccent,
+                  child: ElevatedButton(
                     child: ListTile(
                       title: Text(
                         "QR Kod ile Buluntu Ekle",
