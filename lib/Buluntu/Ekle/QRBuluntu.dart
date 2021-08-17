@@ -1,4 +1,3 @@
-import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -40,7 +39,7 @@ class _QRBuluntuState extends State<QRBuluntu> {
                 hintText: "Veriyi Giriniz",hintStyle: TextStyle(fontSize: 20),
               ),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: (){
                 setState(() {
                   data = _QrController.text;
