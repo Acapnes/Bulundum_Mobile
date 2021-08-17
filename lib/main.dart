@@ -31,16 +31,16 @@ class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   String sk1 = "", sk2 = "";
-  bool loggedIn = false, animRun = false;
+  bool loggedIn = false, animRunn = false;
 
   @override
   void initState() {
-    if (animRun == false) {
+    if (animRunn == false) {
       _controller = AnimationController(
         duration: const Duration(seconds: 1),
         vsync: this,
       )..forward();
-      animRun = true;
+      animRunn = true;
     }
     getData();
   }
