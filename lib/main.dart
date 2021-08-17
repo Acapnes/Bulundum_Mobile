@@ -1,12 +1,8 @@
-import 'dart:async';
-
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
 import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Login-Register/LoginPage.dart';
-import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -35,16 +31,16 @@ class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   String sk1 = "", sk2 = "";
-  bool LoggedIn = false, AnimRun = false;
+  bool loggedIn = false, animRun = false;
 
   @override
   void initState() {
-    if (AnimRun == false) {
+    if (animRun == false) {
       _controller = AnimationController(
         duration: const Duration(seconds: 1),
         vsync: this,
       )..forward();
-      AnimRun = true;
+      animRun = true;
     }
     getData();
   }
@@ -141,16 +137,16 @@ class SecondPage extends StatefulWidget {
 }
 
 class _SecondPageState extends State<SecondPage> {
-  String sk1 = "", sk2 = "", LoggedIn = "", go = "MyHomePage";
+  String sk1 = "", sk2 = "", loggedIn = "", go = "MyHomePage";
 
   @override
   void initState() {
     getData();
 
     if (sk1 != null && sk2 != null) {
-      LoggedIn = "Oturum Kapat";
+      loggedIn = "Oturum Kapat";
     } else {
-      LoggedIn = "Oturum Aç";
+      loggedIn = "Oturum Aç";
     }
   }
 
@@ -162,13 +158,12 @@ class _SecondPageState extends State<SecondPage> {
     print(sk2);
   }
 
-  RaisedButton CustomButton() {
-    return RaisedButton(
-      color: Color(0xFF0078CE),
+  ElevatedButton CustomButton() {
+    return ElevatedButton(
       child:
-      Text(LoggedIn, style: TextStyle(color: Colors.white, fontSize: 18)),
+      Text(loggedIn, style: TextStyle(color: Colors.white, fontSize: 18)),
       onPressed: () {
-        if (LoggedIn == "Oturum Aç") {
+        if (loggedIn == "Oturum Aç") {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => LoginMain()));
         } else {
@@ -178,7 +173,7 @@ class _SecondPageState extends State<SecondPage> {
     );
   }
 
-  String LoginButton = "Oturum Aç";
+  String loginButton = "Oturum Aç";
 
   @override
   Widget build(BuildContext context) {
@@ -226,8 +221,7 @@ class _SecondPageState extends State<SecondPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                    child: RaisedButton(
-                      color: Color(0xFF0078CE),
+                    child: ElevatedButton(
                       child: Text("Tanıtım",
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       onPressed: () {},
