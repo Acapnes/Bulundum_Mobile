@@ -1,7 +1,6 @@
 import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Login-Register/RegisterPage.dart';
 import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
-import 'package:bulundum_mobile/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -123,16 +122,12 @@ class _LoginMainState extends State<LoginMain> {
           body: ({
             'Username': emailController.text,
             'Password': passwordController.text,
-            'sk1' : sk1,
-            'sk2' : sk2,
           }));
       if (response.statusCode == 200) {
         Map<String,dynamic>res = jsonDecode(response.body);
         print(res);
-        if ((res["Success"]).toString() == "1") {
+        if (res["err"] == 0) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('Username', emailController.text);
-          prefs.setString('Password', passwordController.text);
           prefs.setString('sk1', sk1);
           prefs.setString('sk2', sk2);
           Navigator.push(
@@ -149,11 +144,5 @@ class _LoginMainState extends State<LoginMain> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Please fill both fields")));
     }
-  }
-
-  SaveUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('Username', emailController.text);
-    prefs.setString('Password', passwordController.text);
   }
 }
