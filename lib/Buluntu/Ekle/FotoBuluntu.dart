@@ -1,10 +1,8 @@
-import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:motion_tab_bar/motiontabbar.dart';
 
 class MainFoto extends StatelessWidget {
   @override
@@ -24,28 +22,38 @@ class FotoBuluntu extends StatefulWidget {
 
 class _FotoBuluntuState extends State<FotoBuluntu> {
   final imagePicker = ImagePicker();
-  ScrollController _JuniorController = ScrollController();
-  ScrollController _SeinorController;
-  String imagepath;
+  ScrollController _bodyScrollController = ScrollController();
+  ScrollController _listScrollController = ScrollController();
   var image;
-  List<String> imageArray = [];
+  var imajlarArray = [];
   List<AltEsyaNew> AltArray = [];
-  int AltEsyaCounter = 0, _currentindex = 0, _activeindex = -1;
-  double mainScrollPosition = 0, altScrollPosition = 0;
+  int _activeindex = -1;
+  double listViewSize = 0;
+  File imageFile;
+  String imageData, img64 = "";
 
-  getImage() async {
+  getImageAltEsya(int altIndex) async {
     final image = await imagePicker.pickImage(source: ImageSource.camera);
     setState(() {
       if (image != null) {
-        imagepath = image.path;
+        imageFile = File(image.path);
+        imageData = base64Encode(imageFile.readAsBytesSync());
+        imajlarArray[altIndex+1].add(imageData);
+        imajlarArray;
       }
-      if (_activeindex == -1 && image != null) {
-        imageArray.add(imagepath);
-        imageArray;
-      }
-      if (_activeindex != -1 && _activeindex >= 0 && image != null) {
-        AltArray[_activeindex].subimageArray.add(imagepath);
-        AltArray[_activeindex].subimageArray;
+    });
+  }
+
+  getImageMainBuluntu() async {
+    final image = await imagePicker.pickImage(source: ImageSource.camera);
+    setState(() {
+      if (image != null) {
+        imageFile = File(image.path);
+        imageData = base64Encode(imageFile.readAsBytesSync());
+        imajlarArray[0].add(imageData);
+        setState(() {
+          imajlarArray;
+        });
       }
     });
   }
@@ -53,41 +61,25 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
   AltEsyaEkle() {
     setState(() {
       this._activeindex++;
-      this.AltEsyaCounter++;
       AltArray.add(new AltEsyaNew());
+      imajlarArray.add([]);
     });
   }
 
   @override
   void initState() {
-    _SeinorController = ScrollController();
-    _SeinorController.addListener(() {
-      if (_SeinorController.offset >=
-              _SeinorController.position.maxScrollExtent &&
-          !_SeinorController.position.outOfRange) {
-        setState(() {});
-      }
-    });
+    imajlarArray.add([]);
   }
 
-  toTop() async {
-    _JuniorController.animateTo(0,
+  animateToTop() async {
+  _bodyScrollController.animateTo(0,
         duration: Duration(milliseconds: 800), curve: Curves.easeInOut);
   }
 
-  toBot() async {
-    _JuniorController.animateTo(1000,
+  animateToBot() async {
+    final double end = _bodyScrollController.position.maxScrollExtent+600;
+    _bodyScrollController.animateTo(end,
         duration: Duration(milliseconds: 800), curve: Curves.easeInOut);
-  }
-
-  intoAltItemsUp() async {
-    _SeinorController.animateTo(_SeinorController.offset - 500,
-        curve: Curves.linear, duration: Duration(milliseconds: 300));
-  }
-
-  intoAltItemsDown() async {
-    _SeinorController.animateTo(_SeinorController.offset + 500,
-        curve: Curves.linear, duration: Duration(milliseconds: 400));
   }
 
   @override
@@ -95,213 +87,188 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          getImage();
+            listViewSize = 600 * (AltArray.length + 1).toDouble();
+          _activeindex = AltArray.length - 1;
+          AltEsyaEkle();
+          animateToBot();
         },
-        child: Icon(Icons.add_a_photo),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentindex,
-        type: BottomNavigationBarType.shifting,
-        iconSize: 25,
-        onTap: (index) {
-          setState(() {
-            _currentindex = index;
-          });
-          if (index == 0) {
-            intoAltItemsUp();
-            if (_activeindex >= 0 && AltArray[_activeindex - 1] != null) {
-              _activeindex--;
-            }
-          }
-          if (index == 1) {
-            setState(() {
-              _activeindex = -1;
-            });
-
-            toTop();
-          }
-          if (index == 2) {
-            _activeindex = AltArray.length - 1;
-            AltEsyaEkle();
-            toBot();
-            if (AltArray.length >= 2) {
-              intoAltItemsDown();
-            }
-          }
-          if (index == 3) {
-            intoAltItemsDown();
-            if (_activeindex == -1) {
-              toBot();
-            }
-            if (AltArray.length - 1 == _activeindex) {
-              _activeindex++;
-            } else {
-              print("Yeni Elemen Ekle");
-            }
-          }
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.keyboard_arrow_left_outlined),
-            title: Text("Önceki Alt Eşya"),
-            backgroundColor: Colors.blueAccent,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.keyboard_arrow_up_outlined),
-            title: Text("Ana Eşyaya Dön"),
-            backgroundColor: Colors.blueAccent,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            title: Text("Yeni Alt Eşya"),
-            backgroundColor: Colors.blueAccent,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.keyboard_arrow_right_outlined),
-            title: Text("Önceki Alt Eşya"),
-            backgroundColor: Colors.blueAccent,
-          ),
-        ],
+        child: Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: Text("Fotoğrafla Eşya Ekle"),
+        title: Text("Fotoğrafla Buluntu Ekle"),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        controller: _JuniorController,
+        controller: _bodyScrollController,
         child: Container(
-          margin: EdgeInsets.only(top: 30),
+          margin: EdgeInsets.only(top: 20),
           child: Column(
             children: <Widget>[
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
-                height: MediaQuery.of(context).size.height - 260,
+                height: MediaQuery.of(context).size.height - 150,
                 child: Card(
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: 20, top: 20),
-                    child: imageArray.isEmpty
-                        ? Center(
-                            child: Text(
-                              "Fotoğraf Seçilmedi",
-                              style: TextStyle(fontSize: 22),
-                            ),
-                          )
-                        : SingleChildScrollView(
-                            child: Container(
-                              child: GridView.count(
-                                shrinkWrap: true,
-                                primary: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                crossAxisCount: 2,
-                                children:
-                                    List.generate(imageArray.length, (index) {
-                                  //var img = imageArray[index];
-                                  return Container(
-                                      margin: EdgeInsets.all(10),
-                                      child:
-                                          Image.file(File(imageArray[index])));
-                                }),
-                              ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 20, top: 20),
+                        height: MediaQuery.of(context).size.height - 300,
+                        child: imajlarArray[0].isEmpty
+                            ? GestureDetector(
+                          child: Center(
+                              child: Text(
+                                "Fotoğraf Eklenmedi",
+                                style: TextStyle(fontSize: 25),
+                              )),
+                        )
+                            :SingleChildScrollView(
+                          child: Container(
+                            child: GridView.count(
+                              shrinkWrap: true,
+                              primary: true,
+                              crossAxisCount: 2,
+                              physics: NeverScrollableScrollPhysics(),
+                              children: List.generate(
+                                  imajlarArray[0].length, (index) {
+                                return Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: Image.memory(base64Decode(
+                                        imajlarArray[0][index])));
+                              }),
                             ),
                           ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Container(
+                          margin:
+                          EdgeInsets.only(left: 10, bottom: 10, top: 20),
+                          height: 50,
+                          width: 80,
+                          child: ElevatedButton(
+                            style: ButtonStyle(),
+                            onPressed: () {
+                              getImageMainBuluntu();
+                            },
+                            child: Icon(
+                              Icons.add_a_photo,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
               Container(
-                height: 500,
-                width: 500,
+                height: listViewSize,
                 margin:
-                    EdgeInsets.only(top: 20, left: 30, right: 30, bottom: 20),
+                EdgeInsets.only(top: 20, left: 30, right: 30, bottom: 20),
                 child: ListView.builder(
-                  itemExtent: 500,
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: _SeinorController,
+                  itemExtent: 600,
+                  controller: _listScrollController,
                   shrinkWrap: true,
                   itemCount: AltArray.length == null ? 0 : AltArray.length,
                   itemBuilder: (context, index) {
                     return Container(
                         child: Card(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          child: Column(
                             children: [
-                              Container(
-                                margin: EdgeInsets.only(left: 15, top: 15),
-                                child: Align(
-                                  child: Text(
-                                    (index + 1).toString() + ". Alt Eşya",
-                                    style: TextStyle(fontSize: 16),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(left: 25, top: 25),
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        (index + 1).toString() + ". Alt Eşya",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      print(index);
+                                      setState(() {
+                                        AltArray.removeAt(index);
+                                        imajlarArray.removeAt(index+1);
+                                        setState(() {
+                                          listViewSize -= 600;
+                                        });
+                                      });
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 15, top: 15),
+                                      child: Align(
+                                          alignment: Alignment.topRight,
+                                          child: Icon(
+                                            Icons.delete,
+                                            size: 35,
+                                            color: Colors.blueAccent,
+                                          )),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: 450,
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 20),
+                                  child: imajlarArray[index+1].isEmpty
+                                      ? Center(
+                                    child: Text(
+                                      "Fotoğraf Seçilmedi",
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  )
+                                      : SingleChildScrollView(
+                                    child: Container(
+                                      margin: EdgeInsets.only( top: 20, bottom: 20),
+                                      child: GridView.count(
+                                        shrinkWrap: true,
+                                        primary: true,
+                                        crossAxisCount: 2,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        children: List.generate(
+                                            imajlarArray[index+1].length, (i) {
+                                          return Container(
+                                              width: MediaQuery.of(context).size.width,
+                                              margin: EdgeInsets.all(10),
+                                              child: Image.memory(base64Decode(imajlarArray[index+1][i])));
+                                        }),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  AltArray.removeAt(index);
-                                  setState(() {
-                                    AltArray;
-                                  });
+                              Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  left: 10, bottom: 10, top: 30),
+                              height: 50,
+                              width: 80,
+                              child: ElevatedButton(
+                                style: ButtonStyle(),
+                                onPressed: () {
+                                  getImageAltEsya(index);
                                 },
-                                child: Container(
-                                  margin: EdgeInsets.only(right: 15, top: 15),
-                                  child: Align(
-                                      alignment: Alignment.topRight,
-                                      child: Icon(
-                                        Icons.cancel,
-                                        size: 35,
-                                        color: Colors.orangeAccent,
-                                      )),
+                                child: Icon(
+                                  Icons.add_a_photo,
+                                  size: 30,
+                                  color: Colors.white,
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: 400,
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 20),
-                              child: AltArray[index].subimageArray.isEmpty
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        getImage();
-                                      },
-                                      child: Center(
-                                          child: Icon(Icons.add, size: 200)),
-                                    )
-                                  : SingleChildScrollView(
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height:
-                                            MediaQuery.of(context).size.height /
-                                                5,
-                                        child: GridView.count(
-                                          shrinkWrap: true,
-                                          primary: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          crossAxisCount: 1,
-                                          children: List.generate(
-                                              AltArray[index]
-                                                  .subimageArray
-                                                  .length, (i) {
-                                            var img = AltArray[index]
-                                                .subimageArray[i];
-                                            return Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                margin: EdgeInsets.all(10),
-                                                child: Image.file(File(img)));
-                                          }),
-                                        ),
-                                      ),
-                                    ),
                             ),
                           ),
                         ],
-                      ),
-                    ));
+                          ),
+                        ));
                   },
                 ),
               ),
@@ -315,6 +282,4 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
 
 class AltEsyaNew {
   String name;
-
-  List subimageArray = [];
 }
