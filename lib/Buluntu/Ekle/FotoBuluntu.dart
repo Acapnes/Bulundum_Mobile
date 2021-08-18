@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:async/async.dart';
+import 'package:http/http.dart' as http;
 
 class MainFoto extends StatelessWidget {
   @override
@@ -38,7 +41,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
       if (image != null) {
         imageFile = File(image.path);
         imageData = base64Encode(imageFile.readAsBytesSync());
-        imajlarArray[altIndex+1].add(imageData);
+        imajlarArray[altIndex].add(imageData);
         imajlarArray;
       }
     });
@@ -71,6 +74,21 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
     imajlarArray.add([]);
   }
 
+  Upload() async {
+    var response = await http.post(Uri.parse("https://dev.bulundum.com/api/v3/founditems/create/by-images"),
+        body: ({
+          'images': imajlarArray
+        }));
+    if (response.statusCode == 200) {
+      Map<String,dynamic>res = jsonDecode(response.body);
+      print(res);
+      if (res["err"] == 0) {
+
+
+      }
+    }
+  }
+
   animateToTop() async {
   _bodyScrollController.animateTo(0,
         duration: Duration(milliseconds: 800), curve: Curves.easeInOut);
@@ -91,6 +109,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
           _activeindex = AltArray.length - 1;
           AltEsyaEkle();
           animateToBot();
+          //print(imajlarArray);
         },
         child: Icon(Icons.add),
       ),
@@ -139,25 +158,50 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Container(
-                          margin:
-                          EdgeInsets.only(left: 10, bottom: 10, top: 20),
-                          height: 50,
-                          width: 80,
-                          child: ElevatedButton(
-                            style: ButtonStyle(),
-                            onPressed: () {
-                              getImageMainBuluntu();
-                            },
-                            child: Icon(
-                              Icons.add_a_photo,
-                              size: 30,
-                              color: Colors.white,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Container(
+                              margin:
+                              EdgeInsets.only(left: 10, bottom: 10, top: 20),
+                              height: 50,
+                              width: 80,
+                              child: ElevatedButton(
+                                style: ButtonStyle(),
+                                onPressed: () {
+                                  getImageMainBuluntu();
+                                },
+                                child: Icon(
+                                  Icons.add_a_photo,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Container(
+                              margin:
+                              EdgeInsets.only(right: 10, bottom: 10, top: 20),
+                              height: 50,
+                              width: 80,
+                              child: ElevatedButton(
+                                style: ButtonStyle(),
+                                onPressed: () {
+                                  Upload();
+                                },
+                                child: Icon(
+                                  Icons.upload_file,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -256,7 +300,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                               child: ElevatedButton(
                                 style: ButtonStyle(),
                                 onPressed: () {
-                                  getImageAltEsya(index);
+                                  getImageAltEsya(index+1);
                                 },
                                 child: Icon(
                                   Icons.add_a_photo,
