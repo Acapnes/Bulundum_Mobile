@@ -1,5 +1,6 @@
 import 'package:bulundum_mobile/Buluntu/Ekle/FotoBuluntu.dart';
 import 'package:bulundum_mobile/Buluntu/Ekle/QRBuluntu.dart';
+import 'package:bulundum_mobile/Buluntu/Ekle/SesliBuluntu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -77,7 +78,8 @@ class mainBuluntuEkle extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      print("1");
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MainSes()));
                     },
                   ),
                 ),
