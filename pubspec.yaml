@@ -36,6 +36,9 @@ dev_dependencies:
     sdk: flutter
   http:
   image_picker: ^0.8.3+2
+  permission_handler: ^8.1.4+2
+  just_audio: ^0.9.7
+  record: ^3.0.0
   path_provider:
   qr_flutter:
   flutter_launcher_icons:
