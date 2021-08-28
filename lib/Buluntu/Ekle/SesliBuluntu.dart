@@ -27,11 +27,12 @@ class _SesBuluntuState extends State<SesBuluntu> {
   bool _isPaused = false;
   final _audioRecorder = Record();
   bool isRecording = false;
-  int _recordDuration = 0,_pathIndex=0;
+  int _recordDuration = 0, _pathIndex = 0;
   Timer _timer;
   Timer _ampTimer;
   Amplitude _amplitude;
   String RecordString = "Başlat";
+  bool isPlaying = false;
 
   AltEsyaNew altesya = AltEsyaNew();
   var soundsArray = [];
@@ -244,7 +245,7 @@ class _SesBuluntuState extends State<SesBuluntu> {
           child:
               SizedBox(width: _controlSize, height: _controlSize, child: icon),
           onTap: () {
-            print(_audioPlayer.playerState);
+            //print(_audioPlayer.playerState);
             if (_audioPlayer.playerState.playing) {
               pause();
             } else {
@@ -293,7 +294,6 @@ class _SesBuluntuState extends State<SesBuluntu> {
                             }
                           });
                           _isRecording ? stopRecord(_pathIndex) : startRecord();
-
                         },
                       ),
                     ),
@@ -303,17 +303,15 @@ class _SesBuluntuState extends State<SesBuluntu> {
         });
   }
 
-  Widget slider(){
+  Widget slider() {
     return Slider(
       activeColor: Colors.black,
       inactiveColor: Colors.pink,
       value: _position.inSeconds.toDouble(),
       min: 0.0,
       max: _duration.inSeconds.toDouble(),
-      onChanged: (double value){
-        setState(() {
-
-        });
+      onChanged: (double value) {
+        setState(() {});
       },
     );
   }
@@ -326,6 +324,9 @@ class _SesBuluntuState extends State<SesBuluntu> {
         child: InkWell(
           child: Icon(Icons.mic),
           onTap: () {
+            setState(() {
+
+            });
             AltEsyaEkle();
             //showRecordMenu(context);
           },
@@ -370,9 +371,9 @@ class _SesBuluntuState extends State<SesBuluntu> {
                             alignment: Alignment.bottomLeft,
                             child: ElevatedButton(
                               child: Icon(Icons.mic),
-                              onPressed: (){
+                              onPressed: () {
                                 setState(() {
-                                  _pathIndex=0;
+                                  _pathIndex = 0;
                                 });
                                 showRecordMenu(context);
                               },
@@ -385,9 +386,9 @@ class _SesBuluntuState extends State<SesBuluntu> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 10, bottom: 20),
+                margin: EdgeInsets.only(top: 10, bottom: 50),
                 child: ListView.builder(
-                    itemExtent: 300,
+                    itemExtent: 500,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: AltArray.length == null ? 0 : AltArray.length,
@@ -396,30 +397,102 @@ class _SesBuluntuState extends State<SesBuluntu> {
                         child: Card(
                           child: Stack(
                             children: <Widget>[
-                              Center(
-                                  child:soundsArray[index].isEmpty ? Text("Ses Eklenmedi") :
-                                  Container(
-                                    child: Column(
-                                      children: [
-                                        ExpansionTile(
-                                          title: Text((index + 1).toString() + ". Alt eşya ses kayıtları"),
-                                          children: <Widget>[
-                                            Container(height: 30,width: 30,color: Colors.red,)
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                              SingleChildScrollView(
+                                child: Center(
+                                  child: soundsArray[index].isEmpty
+                                      ? Text("Ses Eklenmedi")
+                                      : Container(
+                                        child: ListView.builder(
+                                            physics: NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: soundsArray[index].length == null ? 0 : soundsArray[index].length,
+                                            itemBuilder: (context, i) {
+                                              bool _flag = true;
+                                              return Container(
+                                                child: ExpansionTile(
+                                                  title: Text((index + 1).toString() +". Alt eşyanın "+(i+1).toString()+". ses kaydı"),
+                                                  children: <Widget>[
+                                                    Container(
+                                                      margin: EdgeInsets.all(20),
+                                                      color: Colors.blueGrey,
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          Container(
+                                                            height: 65,
+                                                            margin: EdgeInsets.only(bottom: 10),
+                                                            color: Colors.red,
+                                                            child: Text(soundsArray[index][i].toString())),
+                                                          Container(
+                                                            child: Row(
+                                                              //_audioPlayer.setUrl(soundsArray[index][i]);
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment.spaceAround,
+                                                              children: <Widget>[
+                                                                ElevatedButton(
+                                                                  child: Icon(Icons.play_arrow),
+                                                                  onPressed: () {
+                                                                    setState(() {
+                                                                      isPlaying = !isPlaying;
+                                                                    });
+                                                                    play();
+                                                                    if (_audioPlayer.playerState.playing) {
+
+                                                                    }
+                                                                  },
+                                                                ),
+                                                                ElevatedButton(
+                                                                  child: Icon(
+                                                                      Icons.pause),
+                                                                  onPressed: () {
+                                                                    if (_audioPlayer.playerState.playing) {
+                                                                      pause();
+                                                                    }
+                                                                  },
+                                                                ),
+                                                                ElevatedButton(
+                                                                  child: Icon(
+                                                                      Icons.stop),
+                                                                  onPressed: () {
+                                                                    if (_audioPlayer.playerState.playing) {
+                                                                      stop();
+                                                                    }
+                                                                  },
+                                                                ),
+                                                                ElevatedButton(
+                                                                  child: Icon(
+                                                                      Icons.delete),
+                                                                  onPressed: () {
+                                                                    print(index);
+                                                                    print(i);
+                                                                    print(soundsArray);
+                                                                    setState(() {
+                                                                      soundsArray;
+                                                                    });
+                                                                  },
+                                                                ),
+
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                ),
                               ),
                               Container(
-                                margin:EdgeInsets.only(left: 10),
+                                margin: EdgeInsets.only(left: 10),
                                 child: Align(
                                   alignment: Alignment.bottomLeft,
                                   child: ElevatedButton(
                                     child: Icon(Icons.mic),
-                                    onPressed: (){
+                                    onPressed: () {
                                       setState(() {
-                                        _pathIndex=index;
+                                        _pathIndex = index;
                                       });
                                       showRecordMenu(context);
                                     },
