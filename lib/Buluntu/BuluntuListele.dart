@@ -60,150 +60,153 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        bottomNavigationBar: MotionTabBar(
-          labels: ["Önceki Buluntular", "Ara", "Sonraki Buluntular"],
-          initialSelectedTab: "Ara",
-          tabIconColor: Colors.green,
-          tabSelectedColor: Colors.red,
-          onTabItemSelected: (int value) {
-            print(value);
-            setState(() {});
-            if (value == 2) {
-              toTop();
-              PageNumber++;
-            } else if (value == 1) {
-              print("Arama Kodu");
-            } else if (PageNumber >= 2) {
-              toTop();
-              PageNumber--;
-            }
-          },
-          icons: [
-            Icons.keyboard_arrow_left_outlined,
-            Icons.search,
-            Icons.keyboard_arrow_right_outlined
-          ],
-          textStyle: TextStyle(color: Colors.red),
-        ),
-        appBar: AppBar(),
-        drawer: mainDrawer(),
-        body: Container(
-          child: FutureBuilder(
-            future: ListFoundItems(),
-            builder: (context, snapshot) {
-              if (snapshot.data == null) {
-                return Container(
-                  child: Center(
-                    child: Text("Loading"),
-                  ),
-                );
-              } else {
-                return ListView.builder(
-                  controller: _scrollController,
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, i) {
-                    return Slidable(
-                      actionPane: SlidableScrollActionPane(),
-                      actions: <Widget>[
-                         Container(
-                           margin: EdgeInsets.only(left: 20,right: 10),
-                           child: ElevatedButton(
-                             child: Icon(Icons.more,color: Colors.black,size: 40,),
-                             onPressed: (){
-                               Navigator.push(
-                                   context,
-                                   new MaterialPageRoute(
-                                       builder: (context) =>
-                                           mainBuluntuDetaylar(snapshot.data[i])));
-                             },
-                             style: ElevatedButton.styleFrom(
-                                 elevation: 20,
-                                 primary: Colors.greenAccent,
-                                 minimumSize: Size(175,175),
-                                 side: BorderSide(width: 2.0,)
+    return MaterialApp(
+      theme: ThemeData(fontFamily: 'Ubuntu'),
+      home: Scaffold(
+          bottomNavigationBar: MotionTabBar(
+            labels: ["Önceki Buluntular", "Ara", "Sonraki Buluntular"],
+            initialSelectedTab: "Ara",
+            tabIconColor: Colors.green,
+            tabSelectedColor: Colors.red,
+            onTabItemSelected: (int value) {
+              print(value);
+              setState(() {});
+              if (value == 2) {
+                toTop();
+                PageNumber++;
+              } else if (value == 1) {
+                print("Arama Kodu");
+              } else if (PageNumber >= 2) {
+                toTop();
+                PageNumber--;
+              }
+            },
+            icons: [
+              Icons.keyboard_arrow_left_outlined,
+              Icons.search,
+              Icons.keyboard_arrow_right_outlined
+            ],
+            textStyle: TextStyle(color: Colors.red),
+          ),
+          appBar: AppBar(),
+          drawer: mainDrawer(),
+          body: Container(
+            child: FutureBuilder(
+              future: ListFoundItems(),
+              builder: (context, snapshot) {
+                if (snapshot.data == null) {
+                  return Container(
+                    child: Center(
+                      child: Text("Loading"),
+                    ),
+                  );
+                } else {
+                  return ListView.builder(
+                    controller: _scrollController,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, i) {
+                      return Slidable(
+                        actionPane: SlidableScrollActionPane(),
+                        actions: <Widget>[
+                           Container(
+                             margin: EdgeInsets.only(left: 20,right: 10),
+                             child: ElevatedButton(
+                               child: Icon(Icons.more,color: Colors.black,size: 40,),
+                               onPressed: (){
+                                 Navigator.push(
+                                     context,
+                                     new MaterialPageRoute(
+                                         builder: (context) =>
+                                             mainBuluntuDetaylar(snapshot.data[i])));
+                               },
+                               style: ElevatedButton.styleFrom(
+                                   elevation: 20,
+                                   primary: Colors.greenAccent,
+                                   minimumSize: Size(175,175),
+                                   side: BorderSide(width: 2.0,)
+                               ),
                              ),
                            ),
-                         ),
-                      ],
-                      secondaryActions: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(left: 10,right: 20),
-                          child: ElevatedButton(
-                            child: Icon(Icons.delete,color: Colors.black,size: 40,),
-                            onPressed: (){},
-                            style: ElevatedButton.styleFrom(
-                                elevation: 20,
-                                primary: Colors.redAccent,
-                                minimumSize: Size(175,175),
-                                side: BorderSide(width: 2.0,)
+                        ],
+                        secondaryActions: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(left: 10,right: 20),
+                            child: ElevatedButton(
+                              child: Icon(Icons.delete,color: Colors.black,size: 40,),
+                              onPressed: (){},
+                              style: ElevatedButton.styleFrom(
+                                  elevation: 20,
+                                  primary: Colors.redAccent,
+                                  minimumSize: Size(175,175),
+                                  side: BorderSide(width: 2.0,)
+                              ),
+                            ),
+                          ),
+                        ],
+                        child: Card(
+                          child: Container(
+                            margin: EdgeInsets.all(10),
+                            height: 185,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Center(
+                                      child: Text(
+                                    snapshot.data[i].Title,
+                                    style: TextStyle(fontSize: 18),
+                                  )),
+                                ),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: ListTile(
+                                    title:
+                                        Text("Eşya no : " + snapshot.data[i].Id),
+                                    subtitle: snapshot.data[i].Images == null
+                                        ? Text(
+                                            "Envanter no  : " +
+                                                snapshot.data[i].InventoryNo,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15),
+                                          )
+                                        : Text("Null"),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: ListTile(
+                                    title: Text(
+                                        "Eşya durumu : " + snapshot.data[i].Type),
+                                    subtitle: Text(
+                                        "Bulunduğu depo  : " +
+                                            snapshot.data[i].StorageId,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15)),
+                                    trailing: snapshot.data[i].Images == null
+                                        ? Image(
+                                            image: NetworkImage(
+                                                snapshot.data[i].Images))
+                                        : Image(
+                                            image: AssetImage("img/icon.png"),
+                                            height: 50,
+                                            width: 50,
+                                          ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                      child: Card(
-                        child: Container(
-                          margin: EdgeInsets.all(10),
-                          height: 185,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Center(
-                                    child: Text(
-                                  snapshot.data[i].Title,
-                                  style: TextStyle(fontSize: 18),
-                                )),
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: ListTile(
-                                  title:
-                                      Text("Eşya no : " + snapshot.data[i].Id),
-                                  subtitle: snapshot.data[i].Images == null
-                                      ? Text(
-                                          "Envanter no  : " +
-                                              snapshot.data[i].InventoryNo,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15),
-                                        )
-                                      : Text("Null"),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: ListTile(
-                                  title: Text(
-                                      "Eşya durumu : " + snapshot.data[i].Type),
-                                  subtitle: Text(
-                                      "Bulunduğu depo  : " +
-                                          snapshot.data[i].StorageId,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15)),
-                                  trailing: snapshot.data[i].Images == null
-                                      ? Image(
-                                          image: NetworkImage(
-                                              snapshot.data[i].Images))
-                                      : Image(
-                                          image: AssetImage("img/icon.png"),
-                                          height: 50,
-                                          width: 50,
-                                        ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }
-            },
-          ),
-        ));
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          )),
+    );
   }
 }
 

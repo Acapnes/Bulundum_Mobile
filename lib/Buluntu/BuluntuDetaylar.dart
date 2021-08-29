@@ -11,21 +11,6 @@ class mainBuluntuDetaylar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: MotionTabBar(
-          labels: ["Eski Buluntular", "Ara", "Yeni Buluntular"],
-          initialSelectedTab: "Ara",
-          tabIconColor: Colors.orange,
-          tabSelectedColor: Colors.blueAccent,
-          onTabItemSelected: (int value) {
-            print(value);
-          },
-          icons: [
-            Icons.keyboard_arrow_left_outlined,
-            Icons.search,
-            Icons.keyboard_arrow_right_outlined
-          ],
-          textStyle: TextStyle(color: Colors.red),
-        ),
         appBar: AppBar(),
         //drawer: mainDrawer(),
         body: Container(
@@ -106,15 +91,12 @@ class mainBuluntuDetaylar extends StatelessWidget {
                   ],
                 ),
               ),
-              /*Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: buluntu.Images == null
-                            ? buluntu.Images
-                            : AssetImage("img/icon.png"))),
-              )*/
+              Container(
+                height: 200,
+                width: 200,
+                color: Colors.redAccent,
+                child: buluntu.Images.isEmpty ? Center(child: Text("Fotoğrafı bulunmamakta."),):Image.network('https://picsum.photos/250?image=9'),
+              )
             ],
           ),
         ));
