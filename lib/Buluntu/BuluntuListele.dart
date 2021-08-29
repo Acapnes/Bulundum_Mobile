@@ -89,7 +89,6 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
         appBar: AppBar(),
         drawer: mainDrawer(),
         body: Container(
-          margin: EdgeInsets.only(top: 20),
           child: FutureBuilder(
             future: ListFoundItems(),
             builder: (context, snapshot) {
