@@ -320,6 +320,7 @@ class _SesBuluntuState extends State<SesBuluntu> {
                                                             child: Icon(
                                                                 Icons.delete),
                                                             onPressed: () {
+                                                              soundsArray[0].removeAt(indexMain);
                                                               print(soundsArray);
                                                               setState(() {
                                                                 soundsArray;
@@ -447,9 +448,7 @@ class _SesBuluntuState extends State<SesBuluntu> {
                                                                     child: Icon(
                                                                         Icons.delete),
                                                                     onPressed: () {
-                                                                      print(indexAlt);
-                                                                      print(i);
-                                                                      print(soundsArray);
+                                                                      soundsArray[indexAlt+1].removeAt(i);
                                                                       setState(() {
                                                                         soundsArray;
                                                                       });
