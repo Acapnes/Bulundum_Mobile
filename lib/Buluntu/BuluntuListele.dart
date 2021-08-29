@@ -106,47 +106,40 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                     return Slidable(
                       actionPane: SlidableScrollActionPane(),
                       actions: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                new MaterialPageRoute(
-                                    builder: (context) =>
-                                        mainBuluntuDetaylar(snapshot.data[i])));
-                            print(snapshot.data[i].Title);
-                          },
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 12.0, right: 8),
-                            child: Container(
-                              height: 200,
-                              decoration: BoxDecoration(
-                                  color: Colors.greenAccent,
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Icon(
-                                Icons.more,
-                                color: Colors.white,
-                                size: 45,
-                              ),
-                            ),
-                          ),
-                        )
+                         Container(
+                           margin: EdgeInsets.only(left: 20,right: 10),
+                           child: ElevatedButton(
+                             child: Icon(Icons.more,color: Colors.black,size: 40,),
+                             onPressed: (){
+                               Navigator.push(
+                                   context,
+                                   new MaterialPageRoute(
+                                       builder: (context) =>
+                                           mainBuluntuDetaylar(snapshot.data[i])));
+                             },
+                             style: ElevatedButton.styleFrom(
+                                 elevation: 20,
+                                 primary: Colors.greenAccent,
+                                 minimumSize: Size(175,175),
+                                 side: BorderSide(width: 2.0,)
+                             ),
+                           ),
+                         ),
                       ],
                       secondaryActions: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 12.0, left: 8),
-                          child: Container(
-                            height: 200,
-                            decoration: BoxDecoration(
-                                color: Colors.redAccent,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                              size: 45,
+                        Container(
+                          margin: EdgeInsets.only(left: 10,right: 20),
+                          child: ElevatedButton(
+                            child: Icon(Icons.delete,color: Colors.black,size: 40,),
+                            onPressed: (){},
+                            style: ElevatedButton.styleFrom(
+                                elevation: 20,
+                                primary: Colors.redAccent,
+                                minimumSize: Size(175,175),
+                                side: BorderSide(width: 2.0,)
                             ),
                           ),
-                        )
+                        ),
                       ],
                       child: Card(
                         child: Container(
