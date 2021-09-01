@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
@@ -5,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:just_audio/just_audio.dart' as ap;
+import 'package:record/record.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MainFoto extends StatelessWidget {
   @override
@@ -29,11 +33,38 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
   ScrollController _listScrollController = ScrollController();
   var image;
   var imajlarArray = [];
+  var mixedArray = [];
+  var soundsArray = [];
   List<AltEsyaNew> AltArray = [];
   int _activeindex = -1;
   double listViewSize = 0;
   File imageFile;
   String imageData, img64 = "";
+
+
+
+  bool _isRecording = false;
+  bool _isPaused = false;
+  final _audioRecorder = Record();
+  bool isRecording = false;
+  int _recordDuration = 0, _pathIndex = 0;
+  String RecordString = "Ses Kaydını Başlat",mesaj;
+  bool isPlaying = false,mainInsert=true;
+
+  Icon elIcon = Icon(Icons.mic);
+  Color elColor = Colors.blueAccent;
+
+  AltEsyaNew altesya = AltEsyaNew();
+
+
+  double itemExtend = 0;
+
+
+  final _audioPlayer = ap.AudioPlayer();
+  StreamSubscription<ap.PlayerState> _playerStateChangedSubscription;
+  StreamSubscription<Duration> _durationChangedSubscription;
+  StreamSubscription<Duration> _positionChangedSubscription;
+
 
   getImageAltEsya(int altIndex) async {
     final image = await imagePicker.pickImage(source: ImageSource.camera);
@@ -42,7 +73,10 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
         imageFile = File(image.path);
         imageData = base64Encode(imageFile.readAsBytesSync());
         imajlarArray[altIndex].add(imageData);
+        mixedArray[altIndex].add(["image",imageData]);
         imajlarArray;
+        print(altIndex);
+        print(mixedArray[altIndex][0][0]);
       }
     });
   }
@@ -54,6 +88,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
         imageFile = File(image.path);
         imageData = base64Encode(imageFile.readAsBytesSync());
         imajlarArray[0].add(imageData);
+        mixedArray[0].add(["image",imageData]);
         setState(() {
           imajlarArray;
         });
@@ -66,12 +101,21 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
       this._activeindex++;
       AltArray.add(new AltEsyaNew());
       imajlarArray.add([]);
+      mixedArray.add([]);
+      print(mixedArray.length);
     });
   }
 
   @override
   void initState() {
     imajlarArray.add([]);
+    mixedArray.add([]);
+    soundsArray.add([]);
+  }
+
+  @override
+  void dispose(){
+   // _audioRecorder.dispose();
   }
 
   Upload() async {
@@ -117,8 +161,136 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
         duration: Duration(milliseconds: 800), curve: Curves.easeInOut);
   }
 
+  Future<void> startRecord() async {
+    final status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      print("Mikrofon izni verildi");
+    }
+
+    try {
+      if (await _audioRecorder.hasPermission()) {
+        await _audioRecorder.start();
+
+        bool isRecording = await _audioRecorder.isRecording();
+        setState(() {
+          _isRecording = isRecording;
+          _recordDuration = 0;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> stopRecord(int pathIndex) async {
+    final path = await _audioRecorder.stop();
+
+    if(mainInsert==true)
+    {
+      mixedArray[0].add(["Sound",path]);
+      setState(() {
+        mixedArray;
+      });
+    } else if(mainInsert==false){
+      mixedArray[_pathIndex+1].add(["Sound",path]);
+      setState(() {
+        mixedArray;
+      });
+    }
+
+    _audioPlayer.setUrl(path);
+
+    setState(() => _isRecording = false);
+  }
+
+  Future<void> pauseRecord() async {
+    await _audioRecorder.pause();
+
+    setState(() => _isPaused = true);
+  }
+
+  Future<void> resumeRecord() async {
+    await _audioRecorder.resume();
+
+    setState(() => _isPaused = false);
+  }
+
+// ******** Play Codes ********
+
+  Future<void> play() {
+    return _audioPlayer.play();
+  }
+
+  Future<void> pause() {
+    return _audioPlayer.pause();
+  }
+
+  Future<void> stop() async {
+    await _audioPlayer.stop();
+    return _audioPlayer.seek(const Duration(milliseconds: 0));
+  }
+
+  void showRecordMenu(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter mystate
+                  /*You can rename this!*/) {
+                return Container(
+                    height: 100,
+                    child: Stack(
+                        children: <Widget>[
+                      Container(
+                        child: Center(
+                          child: ElevatedButton(
+                            child: Container(
+                              width: 175,
+                              height: 50,
+                              child: Row(
+                                children: [
+                                  Icon(elIcon.icon,color: elColor,),
+                                  Padding(
+                                      padding: EdgeInsets.only(left: 20),
+                                      child: Text(RecordString,style: TextStyle(color: elColor),)),
+                                ],
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                elevation: 20,
+                                primary: Colors.white70,
+                                minimumSize: Size(175,50),
+                                side: BorderSide(width: 2.0, color: elColor,)
+
+                            ),
+                            onPressed: () {
+                              mystate(() {
+
+                                if (_isRecording || _isPaused) {
+                                  RecordString = "Ses Kaydını Başlat";
+                                  elIcon = Icon(Icons.mic);
+                                  elColor = Colors.blueAccent;
+                                } else {
+                                  elColor = Colors.redAccent;
+                                  elIcon = Icon(Icons.stop);
+                                  RecordString = "Ses Kaydını Durdur";
+                                }
+                              });
+                              _isRecording ? stopRecord(_pathIndex) : startRecord();
+                            },
+                          ),
+                        ),
+                      ),
+                    ]));
+              });
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    final double itemHeight = (size.height - kToolbarHeight - 24)/2.5;
+    final double itemWidth = size.width / 2;
     return Scaffold(
       floatingActionButton: SizedBox(
         width: 120,
@@ -129,7 +301,6 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
             _activeindex = AltArray.length - 1;
             AltEsyaEkle();
             animateToBot();
-           // print(imajlarArray);
           },
           child: Container(
             child: Column(
@@ -153,123 +324,195 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
       body: SingleChildScrollView(
         controller: _bodyScrollController,
         child: Container(
-          margin: EdgeInsets.only(top: 20),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               SizedBox(
-                width: MediaQuery.of(context).size.width - 40,
-                height: MediaQuery.of(context).size.height - 150,
+                width: MediaQuery.of(context).size.width-10,
+                height: (MediaQuery.of(context).size.height-200) ,
                 child: Card(
-                  child: Stack(
+                  child: Column(
                     children: [
+                       Container(
+                         height: MediaQuery.of(context).size.height - 280,
+                          child: mixedArray[0].isEmpty
+                              ? GestureDetector(
+                                  child: Center(
+                                      child: Text(
+                                    "Fotoğraf veya Sesli Kayıt Eklenmedi",
+                                    style: TextStyle(fontSize: 18),
+                                  )),
+                                )
+                              : Container(
+                            height: MediaQuery.of(context).size.height - 200,
+                                child: SingleChildScrollView(
+                                    child: GridView.count(
+                                        childAspectRatio: (itemWidth / itemHeight),
+                                        shrinkWrap: true,
+                                        primary: true,
+                                        crossAxisCount: 2,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        children: List.generate(
+                                            mixedArray[0].length, (index) {
+                                          return Container(
+                                            child: Container(
+                                                        child: mixedArray[0][index][0] != "image" ?
+                                                        Container(
+                                                            child: Column(
+                                                                children: [
+                                                                  ListTile(
+                                                                    title: Text("Ana eşyanın ses kaydı"),
+                                                                  ),
+                                                                  Container(
+                                                                    child: Column(
+                                                                      children: <Widget>[
+                                                                        Container(
+                                                                            height: 65,
+                                                                            margin: EdgeInsets.only(bottom: 10),
+                                                                            child: ListTile(
+                                                                              title: Text("Kayıt Türü"),
+                                                                              subtitle: Text("M4a"),
+                                                                            )),
+                                                                        Container(
+                                                                          child: Row(
+                                                                            mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceAround,
+                                                                            children: <Widget>[
+                                                                              ElevatedButton(
+                                                                                child: Icon(Icons.play_arrow),
+                                                                                onPressed: () {
+                                                                                  setState(() {
+                                                                                    isPlaying = !isPlaying;
+                                                                                  });
+                                                                                  _audioPlayer.setFilePath(mixedArray[0][index][1]);
+                                                                                  if (!_audioPlayer.playerState.playing) {
+                                                                                    play();
+                                                                                  }
+                                                                                },
+                                                                              ),
+                                                                              ElevatedButton(
+                                                                                child: Icon(
+                                                                                    Icons.delete),
+                                                                                onPressed: () {
+                                                                                  //soundsArray[0].removeAt(indexMain);
+                                                                                  print(soundsArray);
+                                                                                  setState(() {
+                                                                                    soundsArray;
+                                                                                  });
+                                                                                },
+                                                                              ),
+
+                                                                            ],
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                          ): Container(
+                                                          child: Column(
+                                                            children: [
+                                                              Align(
+                                                                alignment: Alignment.topRight,
+                                                                child: PopupMenuButton(
+                                                                    color: Colors.yellowAccent,
+                                                                    shape: CircleBorder(),
+                                                                    itemBuilder: (context) => [
+                                                                      PopupMenuItem(
+                                                                        child:
+                                                                        Text("First"),
+                                                                        value: 1,
+                                                                      ),
+                                                                      PopupMenuItem(
+                                                                        child:
+                                                                        Text("Second"),
+                                                                        value: 2,
+                                                                      ),
+                                                                    ]),
+                                                              ),
+                                                              Container(
+                                                                height: 200,
+                                                                child: Image.memory(
+                                                                    base64Decode(
+                                                                        mixedArray[0][index][1])),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )),
+                                          );
+                                        }),
+                                      ),
+                                  ),
+                              ),
+                        ),
                       Container(
-                        margin: EdgeInsets.only(bottom: 20, top: 20),
-                        height: MediaQuery.of(context).size.height - 300,
-                        child: imajlarArray[0].isEmpty
-                            ? GestureDetector(
-                                child: Center(
-                                    child: Text(
-                                  "Fotoğraf Eklenmedi",
-                                  style: TextStyle(fontSize: 25),
-                                )),
-                              )
-                            : SingleChildScrollView(
-                                child: Container(
-                                  child: GridView.count(
-                                    shrinkWrap: true,
-                                    primary: true,
-                                    crossAxisCount: 2,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    children: List.generate(
-                                        imajlarArray[0].length, (index) {
-                                      return Card(
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              child: Align(
-                                                alignment: Alignment.topRight,
-                                                child: PopupMenuButton(
-                                                    color: Colors.yellowAccent,
-                                                    elevation: 20,
-                                                    shape: CircleBorder(),
-                                                    itemBuilder: (context) => [
-                                                          PopupMenuItem(
-                                                            child:
-                                                                Text("First"),
-                                                            value: 1,
-                                                          ),
-                                                          PopupMenuItem(
-                                                            child:
-                                                                Text("Second"),
-                                                            value: 2,
-                                                          ),
-                                                        ]),
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: Alignment.center,
-                                              child: Container(
-                                                  margin: EdgeInsets.only(
-                                                      top: 10,
-                                                      bottom: 10,
-                                                      right: 20),
-                                                  child: Image.memory(
-                                                      base64Decode(
-                                                          imajlarArray[0]
-                                                              [index]))),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }),
+                        width: MediaQuery.of(context).size.width - 20,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Container(
+                                height: 55,
+                                width: 70,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(),
+                                  onPressed: () {
+                                    getImageMainBuluntu();
+                                  },
+                                  child: Icon(
+                                    Icons.add_a_photo,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Container(
+                                height: 55,
+                                width: 70,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(),
+                                  onPressed: () {
+                                    setState(() {
+                                      mainInsert = true;
+                                      _pathIndex = 0;
+                                    });
+                                    showRecordMenu(context);
+                                  },
+                                  child: Icon(
+                                    Icons.mic,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Container(
+                                height: 55,
+                                width: 70,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(),
+                                  onPressed: () {
+                                    Upload();
+                                  },
+                                  child: Icon(
+                                    Icons.upload_file,
+                                    size: 30,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  left: 10, bottom: 10, top: 20),
-                              height: 50,
-                              width: 80,
-                              child: ElevatedButton(
-                                style: ButtonStyle(),
-                                onPressed: () {
-                                  getImageMainBuluntu();
-                                },
-                                child: Icon(
-                                  Icons.add_a_photo,
-                                  size: 30,
-                                  color: Colors.white,
-                                ),
-                              ),
                             ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  right: 10, bottom: 10, top: 20),
-                              height: 50,
-                              width: 80,
-                              child: ElevatedButton(
-                                style: ButtonStyle(),
-                                onPressed: () {
-                                  Upload();
-                                },
-                                child: Icon(
-                                  Icons.upload_file,
-                                  size: 30,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -277,14 +520,12 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
               ),
               Container(
                 height: listViewSize,
-                margin:
-                    EdgeInsets.only(top: 20, left: 30, right: 30, bottom: 20),
+                margin: EdgeInsets.only(top: 20, left: 10, right: 10,),
                 child: ListView.builder(
-                  itemExtent: 600,
                   controller: _listScrollController,
                   shrinkWrap: true,
                   itemCount: AltArray.length == null ? 0 : AltArray.length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (context, indexAlt) {
                     return Container(
                         child: Card(
                       child: Column(
@@ -297,17 +538,16 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                 child: Align(
                                   alignment: Alignment.topLeft,
                                   child: Text(
-                                    (index + 1).toString() + ". Alt Eşya",
+                                    (indexAlt + 1).toString() + ". Alt Eşya",
                                     style: TextStyle(fontSize: 18),
                                   ),
                                 ),
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  print(index);
+                                  print(indexAlt);
                                   setState(() {
-                                    AltArray.removeAt(index);
-                                    imajlarArray.removeAt(index + 1);
+                                    AltArray.removeAt(indexAlt);
                                     setState(() {
                                       listViewSize -= 600;
                                     });
@@ -330,8 +570,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                             width: MediaQuery.of(context).size.width,
                             height: 450,
                             child: Container(
-                              margin: EdgeInsets.only(bottom: 20),
-                              child: imajlarArray[index + 1].isEmpty
+                              child: mixedArray[indexAlt + 1].isEmpty
                                   ? Center(
                                       child: Text(
                                         "Fotoğraf Seçilmedi",
@@ -340,51 +579,124 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                     )
                                   : SingleChildScrollView(
                                       child: Container(
-                                        margin: EdgeInsets.only(
-                                            top: 20, bottom: 20),
-                                        child: GridView.count(
-                                          shrinkWrap: true,
-                                          primary: true,
-                                          crossAxisCount: 2,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          children: List.generate(
-                                              imajlarArray[index + 1].length,
-                                              (i) {
-                                            return Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                margin: EdgeInsets.all(10),
-                                                child: Image.memory(
-                                                    base64Decode(
-                                                        imajlarArray[index + 1]
-                                                            [i])));
-                                          }),
+                                          color: Colors.red,
+                                          margin: EdgeInsets.only(top: 10),
+                                          child: GridView.count(
+                                            //childAspectRatio: (itemWidth / itemHeight),
+                                            shrinkWrap: true,
+                                            primary: true,
+                                            crossAxisCount: 2,
+                                            physics: NeverScrollableScrollPhysics(),
+                                            children: List.generate(mixedArray[indexAlt + 1].length, (i) {
+                                              return Container(
+                                                  width: MediaQuery.of(context).size.width,
+                                                  child: mixedArray[indexAlt+1][i][0] != "image"  ?
+                                                  Container(
+                                                        child: Column(
+                                                          children: [
+                                                            ListTile(
+                                                              title: Text("Ana eşyanın ses kaydı"),
+                                                            ),
+                                                            Container(
+                                                              child: Column(
+                                                                children: <Widget>[
+                                                                  Container(
+                                                                      height: 65,
+                                                                      margin: EdgeInsets.only(bottom: 10),
+                                                                      child: ListTile(
+                                                                        title: Text("Kayıt Türü"),
+                                                                        subtitle: Text("M4a"),
+                                                                      )),
+                                                                  Container(
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                      MainAxisAlignment.spaceAround,
+                                                                      children: <Widget>[
+                                                                        ElevatedButton(
+                                                                          child: Icon(Icons.play_arrow),
+                                                                          onPressed: () {
+                                                                            setState(() {
+                                                                              isPlaying = !isPlaying;
+                                                                            });
+                                                                            _audioPlayer.setFilePath(mixedArray[0][indexAlt][1]);
+                                                                            if (!_audioPlayer.playerState.playing) {
+                                                                              play();
+                                                                            }
+                                                                          },
+                                                                        ),
+                                                                        ElevatedButton(
+                                                                          child: Icon(
+                                                                              Icons.delete),
+                                                                          onPressed: () {
+                                                                            //soundsArray[0].removeAt(indexMain);
+                                                                            print(soundsArray);
+                                                                            setState(() {
+                                                                              soundsArray;
+                                                                            });
+                                                                          },
+                                                                        ),
+
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ): Image.memory(base64Decode(mixedArray[indexAlt+1][i][1])));
+                                            }),
+                                          ),
                                         ),
-                                      ),
                                     ),
                             ),
                           ),
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  left: 10, bottom: 10, top: 30),
-                              height: 50,
-                              width: 80,
-                              child: ElevatedButton(
-                                style: ButtonStyle(),
-                                onPressed: () {
-                                  getImageAltEsya(index + 1);
-                                },
-                                child: Icon(
-                                  Icons.add_a_photo,
-                                  size: 30,
-                                  color: Colors.white,
+                          Row(
+                            children: [
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      left: 10, bottom: 10, top: 30),
+                                  height: 50,
+                                  width: 80,
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(),
+                                    onPressed: () {
+                                      getImageAltEsya(indexAlt + 1);
+                                    },
+                                    child: Icon(
+                                      Icons.add_a_photo,
+                                      size: 30,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              Align(
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      left: 10, bottom: 10, top: 30),
+                                  height: 50,
+                                  width: 80,
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(),
+                                    onPressed: () {
+                                      setState(() {
+                                        mainInsert = false;
+                                        _pathIndex = indexAlt;
+                                      });
+                                      showRecordMenu(context);
+                                    },
+                                    child: Icon(
+                                      Icons.mic,
+                                      size: 30,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
