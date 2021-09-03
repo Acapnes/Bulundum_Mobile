@@ -108,6 +108,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
 
   @override
   void initState() {
+    final status = Permission.microphone.request();
     imajlarArray.add([]);
     mixedArray.add([]);
     soundsArray.add([]);
@@ -166,7 +167,6 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
     if (status != PermissionStatus.granted) {
       print("Mikrofon izni verildi");
     }
-
     try {
       if (await _audioRecorder.hasPermission()) {
         await _audioRecorder.start();
@@ -261,11 +261,9 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                 primary: Colors.white70,
                                 minimumSize: Size(175,50),
                                 side: BorderSide(width: 2.0, color: elColor,)
-
                             ),
                             onPressed: () {
                               mystate(() {
-
                                 if (_isRecording || _isPaused) {
                                   RecordString = "Ses Kaydını Başlat";
                                   elIcon = Icon(Icons.mic);
@@ -289,7 +287,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    final double itemHeight = (size.height - kToolbarHeight - 24)/2.5;
+    final double itemHeight = (size.height - kToolbarHeight - 24)/2.7;
     final double itemWidth = size.width / 2;
     return Scaffold(
       floatingActionButton: SizedBox(
@@ -318,12 +316,13 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
         ),
       ),
       appBar: AppBar(
-        title: Text("Fotoğrafla Buluntu Ekle"),
+        title: Text("Resimli ve Sesli Buluntu Ekle"),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         controller: _bodyScrollController,
         child: Container(
+          //color: Colors.orange[300],
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -347,7 +346,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                             height: MediaQuery.of(context).size.height - 200,
                                 child: SingleChildScrollView(
                                     child: GridView.count(
-                                        childAspectRatio: (itemWidth / itemHeight),
+                                        //childAspectRatio: (itemWidth / itemHeight),
                                         shrinkWrap: true,
                                         primary: true,
                                         crossAxisCount: 2,
@@ -355,91 +354,127 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                         children: List.generate(
                                             mixedArray[0].length, (index) {
                                           return Container(
+                                            margin: EdgeInsets.symmetric(horizontal: 10),
                                             child: Container(
                                                         child: mixedArray[0][index][0] != "image" ?
-                                                        Container(
-                                                            child: Column(
-                                                                children: [
-                                                                  ListTile(
-                                                                    title: Text("Ana eşyanın ses kaydı"),
-                                                                  ),
-                                                                  Container(
-                                                                    child: Column(
-                                                                      children: <Widget>[
-                                                                        Container(
-                                                                            height: 65,
-                                                                            margin: EdgeInsets.only(bottom: 10),
-                                                                            child: ListTile(
-                                                                              title: Text("Kayıt Türü"),
-                                                                              subtitle: Text("M4a"),
-                                                                            )),
-                                                                        Container(
-                                                                          child: Row(
-                                                                            mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceAround,
-                                                                            children: <Widget>[
-                                                                              ElevatedButton(
-                                                                                child: Icon(Icons.play_arrow),
-                                                                                onPressed: () {
-                                                                                  setState(() {
-                                                                                    isPlaying = !isPlaying;
-                                                                                  });
-                                                                                  _audioPlayer.setFilePath(mixedArray[0][index][1]);
-                                                                                  if (!_audioPlayer.playerState.playing) {
-                                                                                    play();
-                                                                                  }
-                                                                                },
-                                                                              ),
-                                                                              ElevatedButton(
-                                                                                child: Icon(
-                                                                                    Icons.delete),
-                                                                                onPressed: () {
-                                                                                  //soundsArray[0].removeAt(indexMain);
-                                                                                  print(soundsArray);
-                                                                                  setState(() {
-                                                                                    soundsArray;
-                                                                                  });
-                                                                                },
-                                                                              ),
-
-                                                                            ],
-                                                                          ),
-                                                                        )
-                                                                      ],
+                                                        Card(
+                                                          child: Container(
+                                                              child: Column(
+                                                                  children: [
+                                                                    ListTile(
+                                                                      title: Text("Ana eşyanın ses kaydı"),
                                                                     ),
+                                                                    Container(
+                                                                      child: Column(
+                                                                        children: <Widget>[
+                                                                          Container(
+                                                                              height: 65,
+                                                                              margin: EdgeInsets.only(bottom: 10),
+                                                                              child: ListTile(
+                                                                                title: Text("Kayıt Türü"),
+                                                                                subtitle: Text("M4a"),
+                                                                              )),
+                                                                          Container(
+                                                                            child: Row(
+                                                                              mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceAround,
+                                                                              children: <Widget>[
+                                                                                ElevatedButton(
+                                                                                  child: Icon(Icons.play_arrow),
+                                                                                  onPressed: () {
+                                                                                    setState(() {
+                                                                                      isPlaying = !isPlaying;
+                                                                                    });
+                                                                                    _audioPlayer.setFilePath(mixedArray[0][index][1]);
+                                                                                    if (!_audioPlayer.playerState.playing) {
+                                                                                      play();
+                                                                                    }
+                                                                                  },
+                                                                                ),
+                                                                                ElevatedButton(
+                                                                                  child: Icon(
+                                                                                      Icons.delete),
+                                                                                  onPressed: () {
+                                                                                    mixedArray[0].removeAt(index);
+                                                                                    setState(() {
+                                                                                      mixedArray;
+                                                                                    });
+                                                                                  },
+                                                                                ),
+
+                                                                              ],
+                                                                            ),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                            ),
+                                                        ): Card(
+                                                            child: Container(
+                                                            child: Stack(
+                                                              children: [
+                                                                Container(
+                                                                  child: Align(
+                                                                    alignment: Alignment.topRight,
+                                                                    child: PopupMenuButton(
+                                                                      iconSize: 20,
+                                                                      onSelected: (value){
+                                                                        if(value==2){
+                                                                          mixedArray[0].removeAt(index);
+                                                                          setState(() {
+                                                                            mixedArray;
+                                                                          });
+                                                                        }else if(value==1){
+
+                                                                        }
+                                                                      },
+                                                                        itemBuilder: (context) => [
+                                                                          PopupMenuItem(
+                                                                            child:
+                                                                            Row(
+                                                                              children: [
+                                                                                Icon(Icons.edit),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(left: 8.0),
+                                                                                  child: Text("Düzenle"),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                            value: 1,
+                                                                          ),
+                                                                          PopupMenuItem(
+                                                                            child:
+                                                                            Row(
+                                                                              children: [
+                                                                                Icon(Icons.delete),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(left:8.0),
+                                                                                  child: Text("Sil"),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                            value: 2,
+                                                                          ),
+                                                                        ]),
                                                                   ),
-                                                                ],
-                                                              ),
-                                                          ): Container(
-                                                          child: Column(
-                                                            children: [
-                                                              Align(
-                                                                alignment: Alignment.topRight,
-                                                                child: PopupMenuButton(
-                                                                    color: Colors.yellowAccent,
-                                                                    shape: CircleBorder(),
-                                                                    itemBuilder: (context) => [
-                                                                      PopupMenuItem(
-                                                                        child:
-                                                                        Text("First"),
-                                                                        value: 1,
-                                                                      ),
-                                                                      PopupMenuItem(
-                                                                        child:
-                                                                        Text("Second"),
-                                                                        value: 2,
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                              Container(
-                                                                height: 200,
-                                                                child: Image.memory(
-                                                                    base64Decode(
-                                                                        mixedArray[0][index][1])),
-                                                              ),
-                                                            ],
+                                                                ),
+                                                                Align(
+                                                                  alignment: Alignment.center,
+                                                                  child: Container(
+                                                                    margin: EdgeInsets.only(right: 20),
+                                                                    height: 165,
+                                                                    child: Image.memory(
+                                                                        base64Decode(
+                                                                            mixedArray[0][index][1])),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                        ),
                                                           ),
-                                                        )),
+                                            ),
                                           );
                                         }),
                                       ),
@@ -447,12 +482,12 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                               ),
                         ),
                       Container(
+                        margin: EdgeInsets.only(top: 10),
                         width: MediaQuery.of(context).size.width - 20,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Align(
-                              alignment: Alignment.bottomLeft,
                               child: Container(
                                 height: 55,
                                 width: 70,
@@ -466,12 +501,10 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                     size: 30,
                                     color: Colors.white,
                                   ),
-
                                 ),
                               ),
                             ),
                             Align(
-                              alignment: Alignment.bottomLeft,
                               child: Container(
                                 height: 55,
                                 width: 70,
@@ -489,12 +522,10 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                     size: 30,
                                     color: Colors.white,
                                   ),
-
                                 ),
                               ),
                             ),
                             Align(
-                              alignment: Alignment.bottomRight,
                               child: Container(
                                 height: 55,
                                 width: 70,
@@ -573,13 +604,12 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                               child: mixedArray[indexAlt + 1].isEmpty
                                   ? Center(
                                       child: Text(
-                                        "Fotoğraf Seçilmedi",
+                                        "Fotoğraf veya Sesli Kayıt Eklenmedi",
                                         style: TextStyle(fontSize: 20),
                                       ),
                                     )
                                   : SingleChildScrollView(
                                       child: Container(
-                                          color: Colors.red,
                                           margin: EdgeInsets.only(top: 10),
                                           child: GridView.count(
                                             //childAspectRatio: (itemWidth / itemHeight),
@@ -591,60 +621,123 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                               return Container(
                                                   width: MediaQuery.of(context).size.width,
                                                   child: mixedArray[indexAlt+1][i][0] != "image"  ?
-                                                  Container(
-                                                        child: Column(
-                                                          children: [
-                                                            ListTile(
-                                                              title: Text("Ana eşyanın ses kaydı"),
-                                                            ),
-                                                            Container(
-                                                              child: Column(
-                                                                children: <Widget>[
-                                                                  Container(
-                                                                      height: 65,
-                                                                      margin: EdgeInsets.only(bottom: 10),
-                                                                      child: ListTile(
-                                                                        title: Text("Kayıt Türü"),
-                                                                        subtitle: Text("M4a"),
-                                                                      )),
-                                                                  Container(
-                                                                    child: Row(
-                                                                      mainAxisAlignment:
-                                                                      MainAxisAlignment.spaceAround,
-                                                                      children: <Widget>[
-                                                                        ElevatedButton(
-                                                                          child: Icon(Icons.play_arrow),
-                                                                          onPressed: () {
-                                                                            setState(() {
-                                                                              isPlaying = !isPlaying;
-                                                                            });
-                                                                            _audioPlayer.setFilePath(mixedArray[0][indexAlt][1]);
-                                                                            if (!_audioPlayer.playerState.playing) {
-                                                                              play();
-                                                                            }
-                                                                          },
-                                                                        ),
-                                                                        ElevatedButton(
-                                                                          child: Icon(
-                                                                              Icons.delete),
-                                                                          onPressed: () {
-                                                                            //soundsArray[0].removeAt(indexMain);
-                                                                            print(soundsArray);
-                                                                            setState(() {
-                                                                              soundsArray;
-                                                                            });
-                                                                          },
-                                                                        ),
-
-                                                                      ],
-                                                                    ),
-                                                                  )
-                                                                ],
+                                                  Card(
+                                                    child: Container(
+                                                          child: Column(
+                                                            children: [
+                                                              ListTile(
+                                                                title: Text("Ana eşyanın ses kaydı"),
                                                               ),
-                                                            ),
-                                                          ],
+                                                              Container(
+                                                                child: Column(
+                                                                  children: <Widget>[
+                                                                    Container(
+                                                                        height: 65,
+                                                                        margin: EdgeInsets.only(bottom: 10),
+                                                                        child: ListTile(
+                                                                          title: Text("Kayıt Türü"),
+                                                                          subtitle: Text("M4a"),
+                                                                        )),
+                                                                    Container(
+                                                                      child: Row(
+                                                                        mainAxisAlignment:
+                                                                        MainAxisAlignment.spaceAround,
+                                                                        children: <Widget>[
+                                                                          ElevatedButton(
+                                                                            child: Icon(Icons.play_arrow),
+                                                                            onPressed: () {
+                                                                              setState(() {
+                                                                                isPlaying = !isPlaying;
+                                                                              });
+                                                                              _audioPlayer.setFilePath(mixedArray[indexAlt+1][i][1]);
+                                                                              if (!_audioPlayer.playerState.playing) {
+                                                                                play();
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                          ElevatedButton(
+                                                                            child: Icon(
+                                                                                Icons.delete),
+                                                                            onPressed: () {
+                                                                              mixedArray[indexAlt+1].removeAt(i);
+                                                                              setState(() {
+                                                                                mixedArray;
+                                                                              });
+                                                                            },
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ): Image.memory(base64Decode(mixedArray[indexAlt+1][i][1])));
+                                                  ): Card(
+                                                    child: Container(
+                                                      child: Stack(
+                                                        children: [
+                                                          Container(
+                                                            child: Align(
+                                                              alignment: Alignment.topRight,
+                                                              child: PopupMenuButton(
+                                                                  iconSize: 20,
+                                                                  onSelected: (value){
+                                                                    if(value==2){
+                                                                      mixedArray[indexAlt+1].removeAt(i);
+                                                                      setState(() {
+                                                                        mixedArray;
+                                                                      });
+                                                                    }else if(value==1){
+
+                                                                    }
+                                                                  },
+                                                                  itemBuilder: (context) => [
+                                                                    PopupMenuItem(
+                                                                      child:
+                                                                      Row(
+                                                                        children: [
+                                                                          Icon(Icons.edit),
+                                                                          Padding(
+                                                                            padding: const EdgeInsets.only(left: 8.0),
+                                                                            child: Text("Düzenle"),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      value: 1,
+                                                                    ),
+                                                                    PopupMenuItem(
+                                                                      child:
+                                                                      Row(
+                                                                        children: [
+                                                                          Icon(Icons.delete),
+                                                                          Padding(
+                                                                            padding: const EdgeInsets.only(left:8.0),
+                                                                            child: Text("Sil"),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      value: 2,
+                                                                    ),
+                                                                  ]),
+                                                            ),
+                                                          ),
+                                                          Align(
+                                                            alignment: Alignment.center,
+                                                            child: Container(
+                                                              margin: EdgeInsets.only(right: 20),
+                                                              height: 165,
+                                                              child: Image.memory(
+                                                                  base64Decode(
+                                                                      mixedArray[indexAlt+1][i][1])),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),);
                                             }),
                                           ),
                                         ),
