@@ -115,9 +115,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
   }
 
   @override
-  void dispose(){
-   // _audioRecorder.dispose();
-  }
+  void dispose(){}
 
   Upload() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -127,20 +125,22 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
     };
     int ustsayac = 0;
     int altsayac = 0;
-    for (ustsayac = 0; ustsayac < imajlarArray.length; ustsayac++) {
-      if (imajlarArray[ustsayac].length > 0) {
+    for (ustsayac = 0; ustsayac < mixedArray.length; ustsayac++) {
+      if (mixedArray[ustsayac].length > 0) {
         for (altsayac = 0;
-            altsayac < imajlarArray[ustsayac].length;
+            altsayac < mixedArray[ustsayac].length;
             altsayac++) {
-          print([ustsayac,altsayac]);
-          body["images[$ustsayac][$altsayac]"] = imajlarArray[ustsayac][altsayac];
+          for(int enAltSayac = 0; enAltSayac < 2; enAltSayac++){
+            print([ustsayac,altsayac,enAltSayac]);
+            body["items[$ustsayac][$altsayac][$enAltSayac]"] = mixedArray[ustsayac][altsayac][enAltSayac];
+          }
         }
       }
     }
     print(body.keys);
     var response = await http.post(
         Uri.parse(
-            "https://dev.bulundum.com/api/v3/founditems/create/by-images"),
+            "https://dev.bulundum.com/api/v3/items/create"),
         body: body);
     print(response.body);
     if (response.statusCode == 200) {
@@ -431,7 +431,8 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                                                         }
                                                                       },
                                                                         itemBuilder: (context) => [
-                                                                          PopupMenuItem(
+                                                                          // *******Düzenleme Butonu****
+                                                                          /*PopupMenuItem(
                                                                             child:
                                                                             Row(
                                                                               children: [
@@ -443,7 +444,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                                                               ],
                                                                             ),
                                                                             value: 1,
-                                                                          ),
+                                                                          ),*/
                                                                           PopupMenuItem(
                                                                             child:
                                                                             Row(
