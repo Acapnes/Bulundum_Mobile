@@ -29,7 +29,7 @@ dependencies:
   permission_handler:
   motion_tab_bar: ^0.1.5
   flutter_slidable: ^0.6.0
-  introduction_screen: ^2.1.0
+  flutter_easyloading: ^3.0.3
 
 
 dev_dependencies:
