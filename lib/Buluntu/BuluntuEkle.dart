@@ -1,6 +1,5 @@
 import 'package:bulundum_mobile/Buluntu/Ekle/FotoBuluntu.dart';
 import 'package:bulundum_mobile/Buluntu/Ekle/QRBuluntu.dart';
-import 'package:bulundum_mobile/Buluntu/Ekle/SesliBuluntu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +19,7 @@ class mainBuluntuEkle extends StatelessWidget {
                 margin: EdgeInsets.only(bottom: 30),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 7,
+                  height: MediaQuery.of(context).size.height / 5,
                   child: ElevatedButton(
                     child: ListTile(
                       title: Text(
@@ -40,11 +39,11 @@ class mainBuluntuEkle extends StatelessWidget {
                 margin: EdgeInsets.only(bottom: 30),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 7,
+                  height: MediaQuery.of(context).size.height / 5,
                   child: ElevatedButton(
                     child: ListTile(
                       title: Text(
-                        "Fotoğrafla Buluntu Ekle",
+                        "Fotoğraflı ve Sesli Buluntu Ekle",
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                       trailing: Icon(
@@ -65,30 +64,7 @@ class mainBuluntuEkle extends StatelessWidget {
                 margin: EdgeInsets.only(bottom: 30),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 7,
-                  child: ElevatedButton(
-                    child: ListTile(
-                      title: Text(
-                        "Ses Kaydı ile Buluntu Ekle",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      trailing: Icon(
-                        Icons.mic,
-                        size: 60,
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MainSes()));
-                    },
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 30),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 7,
+                  height: MediaQuery.of(context).size.height / 5,
                   child: ElevatedButton(
                     child: ListTile(
                       title: Text(
