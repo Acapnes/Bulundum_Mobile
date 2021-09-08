@@ -890,18 +890,16 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
           return AlertDialog(
             title: Container(
                 margin: EdgeInsets.only(bottom: 20),
-                child: mixedArray[esyaIndex+1].isEmpty ? Text((esyaIndex+1).toString()+". Alt Eşyayı silmek istiyor musunuz?")  : Text((esyaIndex+1).toString()+". Alt Eşyayı içindeki kayıtlarla birlikte silmek istiyor musunuz?")),
+                child: mixedArray[esyaIndex+1].isEmpty ? Text((esyaIndex).toString()+". Alt Eşyayı silmek istiyor musunuz?")  : Text((esyaIndex+1).toString()+". Alt Eşyayı içindeki kayıtlarla birlikte silmek istiyor musunuz?")),
             actions: <Widget>[
               MaterialButton(
                 onPressed: (){
                   Navigator.pop(context);
-                  if(mixedArray[esyaIndex+1].isNotEmpty){
-                    for(int altIndex = length-1 ; altIndex > -1;altIndex--){
-                      mixedArray[esyaIndex+1].removeAt(altIndex);
-                    }
+                  for(int altIndex = length-1 ; altIndex > -1;altIndex--){
+                    mixedArray[esyaIndex+1].removeAt(altIndex);
                   }
                   AltArray.removeAt(esyaIndex);
-                  mixedArray.removeAt(esyaIndex);
+                  mixedArray.removeAt(esyaIndex+1);
                   print(mixedArray);
                   setState(() {
                     mixedArray;
