@@ -1,5 +1,7 @@
+import 'package:bulundum_mobile/BottomNavigationBar/mainBNB.dart';
 import 'package:bulundum_mobile/Buluntu/BuluntuEkle.dart';
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
+import 'package:bulundum_mobile/Buluntu/Ekle/FotoBuluntu.dart';
 import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +13,7 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   bool individual = false;
+
 
   getTypeofUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -30,6 +33,8 @@ class _MainMenuState extends State<MainMenu> {
     print(individual);
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +47,7 @@ class _MainMenuState extends State<MainMenu> {
             : Text("Kurumsal", style: TextStyle(fontSize: 20)),
         centerTitle: true,
       ),
+      bottomNavigationBar: mainBNB(),
       drawer: mainDrawer(),
       body: SingleChildScrollView(
         child: Align(
@@ -50,7 +56,7 @@ class _MainMenuState extends State<MainMenu> {
             child: Column(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.only(bottom: 20),
+                  margin: EdgeInsets.only(bottom: 20,top: 20),
                   child: individual == false
                       ? Container(
                           margin: EdgeInsets.only(top: 20),
