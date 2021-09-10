@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
+import 'package:bulundum_mobile/Colors/primaryColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,7 +18,11 @@ class MainFoto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(fontFamily: 'Ubuntu'),
+      theme: ThemeData(
+          primaryColor: kPrimaryColor,
+          accentColor: kPrimaryColor,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: 'Ubuntu'),
       home: Scaffold(
         body: FotoBuluntu(),
       ),
@@ -218,7 +224,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
       });
     }
 
-    _audioPlayer.setUrl(path);
+    //_audioPlayer.setUrl(path);
 
     setState(() => _isRecording = false);
   }
@@ -310,6 +316,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
     final double itemHeight = (size.height - kToolbarHeight - 24)/2.7;
     final double itemWidth = size.width / 2;
     return Scaffold(
+      backgroundColor: kPrimaryColor,
       floatingActionButton: SizedBox(
         width: 120,
         height: 55,
@@ -337,10 +344,14 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
           ),
         ),
       ),
-      appBar: AppBar(
-        title: Text("Resimli ve Sesli Buluntu Ekle"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(elevation: 0,title:Text("Resimli ve Sesli Buluntu Ekle"),centerTitle: true,
+        leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      MainBuluntuList()));
+        },),),
       body: SingleChildScrollView(
         controller: _bodyScrollController,
         child: Container(
