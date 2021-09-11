@@ -64,6 +64,56 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
         duration: Duration(milliseconds: 1250), curve: Curves.easeInOut);
   }
 
+  _showAlertDialogEkleme(){
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Container(
+                margin: EdgeInsets.only(bottom: 20),
+                child: Row(
+                  children: [
+                    Text("Ne Eklemek İstiyorsunuz?"),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(left: 20),
+                          child: Icon(Icons.cancel,color: Colors.blue,size: 25,)),
+                    ),
+                  ],
+                )),
+            actions: <Widget>[
+              Container(
+                margin: EdgeInsets.only(right: 30),
+                child: ElevatedButton(
+                  onPressed: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                FotoBuluntu()));
+                  },
+                  child: Text("Buluntu",style: TextStyle(fontSize: 16)),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(right: 30),
+                child: ElevatedButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                  },
+                  child: Text("Kayıp Eşya",style: TextStyle(fontSize: 16),),
+                ),
+              ),
+
+            ],
+          );
+        }
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,11 +135,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
           ],),
           floatingActionButton: FloatingActionButton(
               onPressed: (){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            MainFoto()));
+                _showAlertDialogEkleme();
               },
               child: Icon(Icons.add),
             ),

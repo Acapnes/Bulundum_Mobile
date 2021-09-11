@@ -1,3 +1,4 @@
+import 'package:bulundum_mobile/Buluntu/Ekle/FotoBuluntu.dart';
 import 'package:bulundum_mobile/Login-Register/LoginPage.dart';
 import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
 import 'package:bulundum_mobile/main.dart';
@@ -70,6 +71,14 @@ class StateFulDrawer extends State {
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => LoginMain()));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.event_note),
+            title: Text("Foto buluntu"),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MainFoto()));
             },
           ),
         ],
