@@ -48,8 +48,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   getData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sk1 = sharedPreferences.get("Username");
-    sk2 = sharedPreferences.get("Password");
+    sk1 = sharedPreferences.get("sk1");
+    sk2 = sharedPreferences.get("sk2");
     print(sk1);
     print(sk2);
   }
@@ -136,8 +136,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 width: 80,
                 margin:EdgeInsets.only(top: 80),
                 child: ElevatedButton(
-                  onPressed: (){
-                    if (sk1 != null && sk2 != null) {
+                  onPressed: () async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    if (prefs.get("sk1") != null && prefs.get("sk2")  != null) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -181,8 +182,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 width: 80,
                 margin:EdgeInsets.only(top: 80),
                 child: ElevatedButton(
-                  onPressed: (){
-                    if (sk1 != null && sk2 != null) {
+                  onPressed: ()async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    if (prefs.get("sk1") != null && prefs.get("sk2")  != null) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -237,9 +239,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   width: 70,
                   height: 90,
                   child: GestureDetector(
-                    onTap: () {
-                      initState();
-                      if (sk1 != null && sk2 != null) {
+                    onTap: () async {
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      if (prefs.get("sk1") != null && prefs.get("sk2")  != null) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
