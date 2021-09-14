@@ -12,7 +12,6 @@ import 'package:just_audio/just_audio.dart' as ap;
 import 'package:record/record.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:legacy_progress_dialog/legacy_progress_dialog.dart';
 
 class MainFoto extends StatelessWidget {
   @override
@@ -56,6 +55,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
   final imagePicker = ImagePicker();
   ScrollController _bodyScrollController = ScrollController();
   ScrollController _listScrollController = ScrollController();
+  TextEditingController _hotelController = TextEditingController();
   var image;
   var imajlarArray = [];
   var mixedArray = [];
@@ -146,8 +146,50 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
     super.dispose();
   }
 
+  _showAlertDialogHotel(){
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Container(
+              child: Column(
+                children: <Widget>[
+                  Text("Lütfen kaydetmek istediğiniz oda numarasını giriniz."),
+                  TextField(
+                    autofocus: true,
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.number,
+                    controller: _hotelController,
+                    decoration: InputDecoration(hintText: ''),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                  Upload();
+                },
+                child: Text("Tamamla"),
+              ),
+            ],
+          );
+        }
+    );
+    print(_hotelController.text);
+  }
+
+  HotelControl() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if(prefs.get("CompanyType") != "ctHotel"){
+      _showAlertDialogHotel();
+    }
+  }
+
   Upload() async {
-    EasyLoading.show(status: 'Loading...');
+    EasyLoading.show(status: 'Loading...',);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var body = {
       'sk1':prefs.get("sk1"),
@@ -163,17 +205,19 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
           for(int enAltSayac = 0; enAltSayac < 2; enAltSayac++){
             print([ustsayac,altsayac,enAltSayac]);
             body["items[$ustsayac][$altsayac][$enAltSayac]"] = mixedArray[ustsayac][altsayac][enAltSayac];
+            if(prefs.get("CompanyType") == "ctHotel"){
+              body["RoomNumber"]= _hotelController.text;
+            }
           }
         }
       }
     }
-    print(body.keys);
     var response = await http.post(
         Uri.parse(
             "https://dev.bulundum.com/api/v3/items/create"),
         body: body);
-    print(response.body);
     if (response.statusCode == 200) {
+      print(body);
       EasyLoading.showSuccess('Great Success!');
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Yükleme başarılı bir şekilde gerçekleşti")));
@@ -315,11 +359,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24)/2.7;
     final double itemWidth = size.width / 2;
-    return WillPopScope(
-      onWillPop: (){
-        MainBuluntuList();
-      },
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: kPrimaryColor,
         floatingActionButton: SizedBox(
           width: 120,
@@ -331,7 +371,6 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
               _activeindex = AltArray.length - 1;
               AltEsyaEkle();
               animateToBot();
-              print(mixedArray);
             },
             child: Container(
               child: Column(
@@ -835,8 +874,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   _showAlertDialogYesNo(){
@@ -849,9 +887,16 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                 child: Text("Seçtiklerinizi Yüklemek İstediğinizden Emin Misiniz?")),
             actions: <Widget>[
               MaterialButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                  Upload();
+                onPressed: () async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  if(prefs.get("CompanyType") != "ctHotel") {
+                    Navigator.pop(context);
+                    _showAlertDialogHotel();
+                  }else{
+                    Navigator.pop(context);
+                    Upload();
+                  }
+
                 },
                 child: Text("Evet"),
               ),

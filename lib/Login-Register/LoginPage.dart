@@ -1,3 +1,4 @@
+import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
 import 'package:bulundum_mobile/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Login-Register/RegisterPage.dart';
 import 'package:bulundum_mobile/MainMenu/MenuPage.dart';
@@ -17,7 +18,7 @@ class LoginMain extends StatefulWidget {
 
 class _LoginMainState extends State<LoginMain> {
 
-  String sk1="",sk2="";
+  String sk1="",sk2="",CompanyType="";
 
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
@@ -125,17 +126,17 @@ class _LoginMainState extends State<LoginMain> {
             'Password': passwordController.text,
           }));
       if (response.statusCode == 200) {
-        Map<String,dynamic>res = jsonDecode(response.body);
-        print(res);
+        Map<String,dynamic> res = jsonDecode(response.body);
         if (res["err"] == 0) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('sk1', sk1);
-          prefs.setString('sk2', sk2);
+          prefs.setString('sk1', res["sk1"]);
+          prefs.setString('sk2', res["sk2"]);
+          prefs.setString('CompanyType', res["Company"]["Typ"]);
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => MainMenu()));
+              context, MaterialPageRoute(builder: (context) => MainBuluntuList()));
         } else {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Wrong username or password")));
+              .showSnackBar(SnackBar(content: Text("Yanlış kullanıcı adı veya şifre")));
         }
       } else {
         ScaffoldMessenger.of(context)
@@ -143,7 +144,7 @@ class _LoginMainState extends State<LoginMain> {
       }
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Please fill both fields")));
+          .showSnackBar(SnackBar(content: Text("Lütfen gerekli alanları doldurun.")));
     }
   }
 }
