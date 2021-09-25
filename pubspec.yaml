@@ -43,6 +43,7 @@ dev_dependencies:
   record: ^3.0.0
   path_provider:
   qr_flutter:
+  qr_code_scanner: ^0.5.2
   flutter_launcher_icons:
 
 flutter_icons:

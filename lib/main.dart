@@ -1,7 +1,6 @@
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
-import 'package:bulundum_mobile/Login-Register/LoginPage.dart';
+import 'package:bulundum_mobile/Pages/Login-Register/LoginPage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -125,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 ),
               ),
               Container(
-                  margin: EdgeInsets.only(top: 50, left: 25, right: 25),
+                  margin: EdgeInsets.only(top: 40, left: 25, right: 25),
                   child: Text(
                     "Artık eşyanıza kavuşmanın ve eşyaları sahiplerine kavuşturmanın etkili bir yolu var.",
                     textAlign: TextAlign.center,
@@ -171,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 ),
               ),
               Container(
-                  margin: EdgeInsets.only(top: 50, left: 25, right: 25),
+                  margin: EdgeInsets.only(top: 40, left: 25, right: 25),
                   child: Text(
                     "Kolay, hızlı ve sıkıntısız.\n\nBuluntu kaydı\nKayıp eşya bildirme",
                     textAlign: TextAlign.center,

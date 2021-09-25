@@ -1,7 +1,6 @@
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:motion_tab_bar/motiontabbar.dart';
 
 class mainBuluntuDetaylar extends StatelessWidget {
   final Buluntu buluntu;
@@ -12,7 +11,6 @@ class mainBuluntuDetaylar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        //drawer: mainDrawer(),
         body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,

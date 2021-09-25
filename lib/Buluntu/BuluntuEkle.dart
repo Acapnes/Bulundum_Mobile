@@ -1,5 +1,5 @@
-import 'package:bulundum_mobile/Buluntu/Ekle/FotoBuluntu.dart';
-import 'package:bulundum_mobile/Buluntu/Ekle/QRBuluntu.dart';
+import 'package:bulundum_mobile/Buluntu/FotoBuluntuEkle.dart';
+import 'package:bulundum_mobile/Buluntu/QRBuluntu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
