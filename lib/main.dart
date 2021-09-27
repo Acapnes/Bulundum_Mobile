@@ -3,6 +3,7 @@ import 'package:bulundum_mobile/Pages/Login-Register/LoginPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,8 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Ubuntu'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: MyHomePage(),
     );
   }
@@ -74,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     return Scaffold(
-      appBar: AppBar(title: Text("Bulundum"),centerTitle: true,
+      appBar: AppBar(title: Text(AppLocalizations.of(context)?.hello ?? 'Olmadı'),centerTitle: true,
         actions: [
           IconButton(icon: Icon(Icons.arrow_back_ios),onPressed: (){
             setState(() {
