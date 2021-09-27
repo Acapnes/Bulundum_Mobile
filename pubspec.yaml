@@ -38,7 +38,7 @@ dev_dependencies:
   path_provider:
   qr_flutter:
   qr_code_scanner: ^0.5.2
-  flutter_launcher_icons:
+  flutter_launcher_icons: ^0.9.2
   cupertino_icons: ^1.0.2
   hexcolor: ^2.0.4
   shared_preferences:
@@ -48,11 +48,10 @@ dev_dependencies:
   flutter_easyloading: ^3.0.3
   legacy_progress_dialog: ^0.0.9
 
-
 flutter_icons:
-  image_path: "assets/icon.png"
   android: true
   ios: true
+  image_path: "assets/icon-v1.png"
 
 
 # For information on the generic Dart part of this file, see the
