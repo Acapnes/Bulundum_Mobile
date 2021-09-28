@@ -79,18 +79,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(title: Text(AppLocalizations.of(context)?.hello ?? 'Olmadı'),centerTitle: true,
         actions: [
-          IconButton(icon: Icon(Icons.arrow_back_ios),onPressed: (){
+          IconButton(icon: currenrPage == 0 ? Icon(null) : Icon(Icons.arrow_back_ios),onPressed: (){
+            if(currenrPage!=0){
             setState(() {
-              if(currenrPage!=0){
-                currenrPage--;
-              }
+              currenrPage--;
             });
+            }
             pageController.animateToPage(currenrPage, duration: Duration(milliseconds: 500), curve: Curves.easeOutSine);
           },),
 
           IconButton(icon: Icon(Icons.arrow_forward_ios),onPressed: (){
             if(currenrPage!=2){
-              currenrPage++;
+              setState(() {
+                currenrPage++;
+              });
             }
             pageController.animateToPage(currenrPage, duration: Duration(milliseconds: 500), curve: Curves.easeOutSine);
           },),

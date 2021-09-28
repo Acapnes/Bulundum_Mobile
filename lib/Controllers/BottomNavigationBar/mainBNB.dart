@@ -42,9 +42,6 @@ class _mainBNBState extends State<mainBNB> {
             new MaterialPageRoute(builder: (context) => MainFoto()));
       } else if (_currentIndex == 2) {
         Navigator.push(context,
-            new MaterialPageRoute(builder: (context) => mainMessages()));
-      } else if (_currentIndex == 3) {
-        Navigator.push(context,
             new MaterialPageRoute(builder: (context) => mainProfile()));
       }
     }
@@ -55,14 +52,7 @@ class _mainBNBState extends State<mainBNB> {
       if (_currentIndex == 0) {
         Navigator.push(context,
             new MaterialPageRoute(builder: (context) => MainBuluntuList()));
-      } else if (_currentIndex == 1) {
-
-      } else if (_currentIndex == 2) {
-
-      } else if (_currentIndex == 3) {
-        Navigator.push(context,
-            new MaterialPageRoute(builder: (context) => mainMessages()));
-      } else if (_currentIndex == 4) {
+      }  else if (_currentIndex == 2) {
         Navigator.push(context,
             new MaterialPageRoute(builder: (context) => mainProfile()));
       }
@@ -96,14 +86,6 @@ class _mainBNBState extends State<mainBNB> {
             title: Text('Bildirim Listesi'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.network_check_outlined, color: Colors.blueAccent),
-            title: Text('Eşleşmeler'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message, color: Colors.blueAccent),
-            title: Text('Messages'),
-          ),
-          BottomNavigationBarItem(
               icon: Icon(Icons.person, color: Colors.blueAccent),
               title: Text('Profil')),
         ],
@@ -125,10 +107,6 @@ class _mainBNBState extends State<mainBNB> {
           BottomNavigationBarItem(
             icon: Icon(Icons.add, color: Colors.blueAccent),
             title: Text('Eşya Ekle'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message, color: Colors.blueAccent),
-            title: Text('Messages'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person, color: Colors.blueAccent),

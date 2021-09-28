@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
-import 'package:bulundum_mobile/Colors/primaryColors.dart';
+import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';

@@ -20,7 +20,7 @@ class mainProfile extends StatefulWidget {
 
 class _mainProfileState extends State<mainProfile> {
   int status = 1;
-  bool Company = false;
+  bool Company = false, isConnected = false;
   Color statusFontColor = Colors.green;
   bool isChecked = true;
   TextEditingController textFirstNameController = TextEditingController();
@@ -28,6 +28,7 @@ class _mainProfileState extends State<mainProfile> {
   TextEditingController textEmailController = TextEditingController();
   TextEditingController textPhoneController = TextEditingController();
   TextEditingController textPasswordController = TextEditingController();
+
 
   @override
   void initState() {
@@ -69,6 +70,7 @@ class _mainProfileState extends State<mainProfile> {
       textLastNameController.text = jsonData["Lastname"];
       textEmailController.text = jsonData["Email"];
       textPhoneController.text = jsonData["Phone"];
+      isConnected = true;
     });
   }
 
@@ -188,7 +190,9 @@ class _mainProfileState extends State<mainProfile> {
             accentColor: kPrimaryColor,
             visualDensity: VisualDensity.adaptivePlatformDensity,
             fontFamily: 'Ubuntu'),
-        home: Container(
+        home: isConnected == false ? Center(
+          child: CircularProgressIndicator(),
+        ) : Container(
           color: kPrimaryColor,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
