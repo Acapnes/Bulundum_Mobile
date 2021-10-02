@@ -47,9 +47,11 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
           buluntu["StoragePlace"]["Title"],
           buluntu["InventoryNo"]);
       buluntular.add(newBuluntu);
+      print(buluntu["Images"].length);
     }
     return buluntular;
   }
+
 
   @override
   void initState() {
@@ -347,19 +349,19 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                                                         alignment: Alignment.center,
                                                         child: ListTile(
                                                           title: Text(
-                                                              "Eşya durumu : " + snapshot.data[i].Type),
+                                                              "Eşya durumu : " + snapshot.data[i].StatusText),
                                                           subtitle: Text(
                                                               "Bulunduğu depo  : " +
-                                                                  snapshot.data[i].StorageId,
+                                                                  snapshot.data[i].StorageTitle,
                                                               style: TextStyle(
                                                                   fontWeight: FontWeight.bold,
                                                                   fontSize: 15)),
-                                                          trailing: snapshot.data[i].Images == null
+                                                          trailing: snapshot.data[i].Images.length > 0
                                                               ? Image(
-                                                                  image: NetworkImage(
-                                                                      snapshot.data[i].Images))
+                                                              image: NetworkImage(
+                                                                  snapshot.data[i].Images[0]["RemotePath"]))
                                                               : Image(
-                                                                  image: AssetImage("img/icon.png"),
+                                                                  image: AssetImage("assets/icon-v1.png"),
                                                                   height: 50,
                                                                   width: 50,
                                                                 ),
@@ -424,19 +426,12 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
 
 class Buluntu {
   String Title;
-
   String Id;
-
-  String Type;
-
-  String StorageId;
-
+  List Images = [];
+  String StatusText;
+  String PrivateDetails;
+  String StorageTitle;
   String InventoryNo;
 
-  String PrivateDetails;
-
-  List Images;
-
-  Buluntu(this.Title, this.Id, this.Images, this.Type, this.PrivateDetails,
-      this.StorageId, this.InventoryNo);
+  Buluntu(this.Title, this.Id, this.Images, this.StatusText, this.PrivateDetails,this.StorageTitle, this.InventoryNo);
 }
