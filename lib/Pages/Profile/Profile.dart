@@ -5,13 +5,13 @@ import 'package:bulundum_mobile/Controllers/BottomNavigationBar/mainBNB.dart';
 import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
 import 'package:bulundum_mobile/Controllers/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Controllers/FAB/mainFAB.dart';
-import 'package:bulundum_mobile/Controllers/FunctionManager/mainFM.dart';
 import 'package:flutter/widgets.dart';
 import 'package:bulundum_mobile/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../globals.dart' as globals;
 
 class mainProfile extends StatefulWidget {
   @override
@@ -33,7 +33,6 @@ class _mainProfileState extends State<mainProfile> {
   @override
   void initState() {
     super.initState();
-    printType();
     openProfile();
   }
 
@@ -41,6 +40,7 @@ class _mainProfileState extends State<mainProfile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print(("CompanyType:"));
     print(prefs.get("CompanyType"));
+
   }
 
   openProfile() async {
@@ -50,7 +50,6 @@ class _mainProfileState extends State<mainProfile> {
       'sk2': prefs.get("sk2"),
     });
     var response = await http.get(uri);
-    print(response.body);
     var jsonData = jsonDecode(response.body);
 
     prefs.setString('Firstname', jsonData["Firstname"]);
@@ -79,10 +78,9 @@ class _mainProfileState extends State<mainProfile> {
     var body = {
       'sk1': prefs.get("sk1"),
       'sk2': prefs.get("sk2"),
+
     };
-    /*var response = await http
-        .post(Uri.parse("https://dev.bulundum.com/api/v3/logout"), body: body);*/
-    var response = await http.post(Uri.parse(setUrl("logout")), body: body);
+    var response = await http.post(Uri.parse(globals.getUrl("logout")), body: body);
     if (response.statusCode == 200) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
       prefs.remove("sk1");
@@ -109,7 +107,7 @@ class _mainProfileState extends State<mainProfile> {
       'Phone': prefs.get("Phone"),
       'Password': textPasswordController.text,
     };
-    var response = await http.post(Uri.parse(setUrl("profile")), body: body);
+    var response = await http.post(Uri.parse(globals.getUrl("profile")), body: body);
     if (response.statusCode == 200) {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -124,14 +122,20 @@ class _mainProfileState extends State<mainProfile> {
       'sk2': prefs.get("sk2"),
       'inOffice': status == 1 ? "1" : "0",
     };
-    var response = await http.post(Uri.parse(setUrl("profile")), body: body);
-    print(response.body);
-    print(body);
+    var response = await http.post(Uri.parse(globals.getUrl("profile")), body: body);
     if (response.statusCode == 200) {
+      print(response.body);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Hesaptan çıkış işlemi başarısız.")));
     }
+  }
+
+  changeServer() async {
+    setState(() {
+      globals.server = globals.server == "production" ? "development" : "production";
+    });
+    print(globals.server);
   }
 
   void _showAction(BuildContext context, int index) {
@@ -207,6 +211,18 @@ class _mainProfileState extends State<mainProfile> {
                     width: MediaQuery.of(context).size.width - 20,
                     child: Stack(
                       children: [
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            child: IconButton(
+                              onPressed: (){
+                                changeServer();
+                              },
+                              icon: Icon(Icons.swap_horiz,size: 30,),
+                                ),
+                          ),
+                        ),
                         Container(
                           margin: EdgeInsets.only(bottom: 30),
                           child: Center(
@@ -222,7 +238,7 @@ class _mainProfileState extends State<mainProfile> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(),
+                          margin: EdgeInsets.only(right: 20,bottom: 7),
                           child: Company
                               ? Align(
                                   alignment: Alignment.bottomCenter,
@@ -248,12 +264,13 @@ class _mainProfileState extends State<mainProfile> {
                                                     color: statusFontColor,
                                                   ),
                                                 )),
-                                      MaterialButton(
+                                      GestureDetector(
                                         child: Container(
-                                            margin: EdgeInsets.only(right: 50),
+                                          width: 20,
+                                            margin: EdgeInsets.only(right: 50,left: 20),
                                             child: Icon(
                                                 Icons.swap_horizontal_circle)),
-                                        onPressed: () {
+                                        onTap: () {
                                           if (status != 1) {
                                             setState(() {
                                               status = 1;
