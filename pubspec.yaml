@@ -51,7 +51,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon-v1.png"
+  image_path: "assets/icon-v2.png"
 
 
 # For information on the generic Dart part of this file, see the
@@ -69,7 +69,7 @@ flutter:
   assets:
     - img/bulundum_logo.png
     - img/right_arrow.png
-    - img/icon.png
+    - img/icon-v2.png
     - img/bulundum-yazi.png
     - img/circle-avatar.jpg
 

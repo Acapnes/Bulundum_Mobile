@@ -29,6 +29,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To be able to save items by speaking about them</string>
 	<key>NSCameraUsageDescription</key>
 	<string>To choose an avatar photo</string>
 	<key>NSPhotoLibraryUsageDescription</key>
