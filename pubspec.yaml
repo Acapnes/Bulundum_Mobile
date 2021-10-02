@@ -70,6 +70,8 @@ flutter:
     - img/bulundum_logo.png
     - img/right_arrow.png
     - img/icon-v2.png
+    - assets/icon.png
+    - assets/icon-v1.png
     - img/bulundum-yazi.png
     - img/circle-avatar.jpg
 
