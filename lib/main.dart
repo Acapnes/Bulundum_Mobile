@@ -1,8 +1,11 @@
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
 import 'package:bulundum_mobile/Pages/Login-Register/LoginPage.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'globals.dart' as globals;
+
 
 void main() {
   runApp(MyApp());
@@ -26,11 +29,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   PageController pageController = PageController(initialPage: 0);
-
   AnimationController _controller;
-  String sk1 = "", sk2 = "";
-  bool loggedIn = false, animRunn = false;
-
+  bool animRunn = false;
   int currenrPage=0;
 
   @override
@@ -47,10 +47,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   getData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sk1 = sharedPreferences.get("sk1");
-    sk2 = sharedPreferences.get("sk2");
-    print(sk1);
-    print(sk2);
+    globals.sk1 = sharedPreferences.get("sk1")?? "" ;
+    globals.sk2 = sharedPreferences.get("sk2")?? "" ;
+    if(globals.sk1 != "" && globals.sk2 != ""){
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  MainBuluntuList()));
+    }
   }
   @override
   void dispose() {
@@ -122,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 height: MediaQuery.of(context).size.height / 3,
                 margin: EdgeInsets.only(top: 80),
                 child: Image(
-                  image: AssetImage("img/icon.png"),
+                  image: AssetImage("assets/icon-v1.png"),
                 ),
               ),
               Container(
@@ -168,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 height: MediaQuery.of(context).size.height / 3,
                 margin: EdgeInsets.only(top: 80),
                 child: Image(
-                  image: AssetImage("img/icon.png"),
+                  image: AssetImage("assets/icon-v1.png"),
                 ),
               ),
               Container(
@@ -217,7 +222,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   child: Container(
                     margin: EdgeInsets.only(top: 50),
                     child: Image(
-                      image: AssetImage("img/icon.png"),
+                      image: AssetImage("assets/icon-v1.png"),
                     ),
                   ),
                 ),
