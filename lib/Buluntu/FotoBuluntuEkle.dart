@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
 import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
-import 'package:bulundum_mobile/Controllers/FunctionManager/mainFM.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +12,7 @@ import 'package:just_audio/just_audio.dart' as ap;
 import 'package:record/record.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../../globals.dart' as globals;
 
 class MainFoto extends StatelessWidget {
   @override
@@ -218,7 +218,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
             "https://dev.bulundum.com/api/v3/items/create"),*/
     var response = await http.post(
         Uri.parse(
-            setUrl("create")),
+            globals.getUrl("create")),
         body: body);
     if (response.statusCode == 200) {
       print(body);

@@ -1,12 +1,12 @@
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
 import 'package:bulundum_mobile/Controllers/Drawer/mainDrawer.dart';
-import 'package:bulundum_mobile/Controllers/FunctionManager/mainFM.dart';
 import 'package:bulundum_mobile/Pages/Login-Register/RegisterPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../globals.dart' as globals;
 
 class LoginMain extends StatefulWidget {
   const LoginMain({Key key}) : super(key: key);
@@ -119,7 +119,7 @@ class _LoginMainState extends State<LoginMain> {
 
   Future<void> login() async {
     if (passwordController.text.isNotEmpty && emailController.text.isNotEmpty) {
-      var response = await http.post(Uri.parse(setUrl("login")),
+      var response = await http.post(Uri.parse(globals.getUrl("login")),
           body: ({
             'Username': emailController.text,
             'Password': passwordController.text,
@@ -130,12 +130,10 @@ class _LoginMainState extends State<LoginMain> {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('sk1', res["sk1"]);
           prefs.setString('sk2', res["sk2"]);
-          if(emailController.text=="Necmettin"){
-            prefs.setString('CompanyType', "ctAirport");
-          }
-          else{
-            prefs.setString('CompanyType', res["Company"]["Typ"]);
-          }
+          prefs.setString('CompanyType', res["Company"]["Typ"]);
+          globals.sk1 = res['sk1'];
+          globals.sk2 = res['sk2'];
+          globals.CompanyType = res["Company"]["Typ"];
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => MainBuluntuList()));
         } else {
