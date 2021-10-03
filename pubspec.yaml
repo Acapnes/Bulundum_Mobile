@@ -47,6 +47,7 @@ dev_dependencies:
   flutter_slidable: ^0.6.0
   flutter_easyloading: ^3.0.3
   legacy_progress_dialog: ^0.0.9
+  carousel_slider: ^4.0.0
 
 flutter_icons:
   android: true
