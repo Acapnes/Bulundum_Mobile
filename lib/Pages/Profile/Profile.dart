@@ -34,6 +34,7 @@ class _mainProfileState extends State<mainProfile> {
   void initState() {
     super.initState();
     openProfile();
+    print(globals.id);
   }
 
   printType() async {
@@ -214,14 +215,19 @@ class _mainProfileState extends State<mainProfile> {
                         Positioned(
                           right: 0,
                           top: 0,
-                          child: Container(
+                          child: globals.id == "88" || globals.id == "12" ||
+                                 globals.id == "62" || globals.id == "89" ||
+                                 globals.id == "94" || globals.id == "95" ||
+                                 globals.id == "117" || globals.id == "119" ||
+                                 globals.id == "140" || globals.id == "141"
+                              ? Container(
                             child: IconButton(
                               onPressed: (){
                                 changeServer();
                               },
                               icon: Icon(Icons.swap_horiz,size: 30,),
                                 ),
-                          ),
+                          ) : Container()
                         ),
                         Container(
                           margin: EdgeInsets.only(bottom: 30),

@@ -3,6 +3,7 @@ library myApp.globals;
 bool isLoggedIn = false;
 String sk1 = "";
 String sk2 = "";
+String id = "";
 String server = "production";
 String CompanyType = "";
 
