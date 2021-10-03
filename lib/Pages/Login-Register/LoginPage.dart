@@ -127,12 +127,15 @@ class _LoginMainState extends State<LoginMain> {
       if (response.statusCode == 200) {
         Map<String,dynamic> res = jsonDecode(response.body);
         if (res["err"] == 0) {
+          print(response.body);
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('sk1', res["sk1"]);
           prefs.setString('sk2', res["sk2"]);
+          prefs.setString('id', res["User"]["Id"]);
           prefs.setString('CompanyType', res["Company"]["Typ"]);
           globals.sk1 = res['sk1'];
           globals.sk2 = res['sk2'];
+          globals.id =  res["User"]["Id"];
           globals.CompanyType = res["Company"]["Typ"];
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => MainBuluntuList()));
