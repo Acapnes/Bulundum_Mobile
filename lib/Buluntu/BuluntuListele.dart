@@ -2,9 +2,7 @@ import 'package:bulundum_mobile/Buluntu/BuluntuDetaylar.dart';
 import 'package:bulundum_mobile/Buluntu/FotoBuluntuEkle.dart';
 import 'package:bulundum_mobile/Controllers/BottomNavigationBar/mainBNB.dart';
 import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
-import 'package:bulundum_mobile/Controllers/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Controllers/FAB/mainFAB.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
@@ -21,7 +19,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
   List<Buluntu> buluntular = new List<Buluntu>();
   ScrollController _scrollController = ScrollController();
   List data;
-  int PageNumber = 1;
+  int pageNumber = 1;
   String dataController;
   bool first = true;
 
@@ -30,7 +28,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
     final uri = Uri.https("dev.bulundum.com", "/api/v3/founditems", {
       'sk1': prefs.get("sk1"),
       'sk2': prefs.get("sk2"),
-      'Page': "$PageNumber"
+      'Page': "$pageNumber"
     });
     var response = await http.get(uri);
     var jsonData = jsonDecode(response.body);
@@ -47,7 +45,6 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
           buluntu["StoragePlace"]["Title"],
           buluntu["InventoryNo"]);
       buluntular.add(newBuluntu);
-      print(buluntu["Images"].length);
     }
     return buluntular;
   }
@@ -182,9 +179,9 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                         GestureDetector(
                           onTap: (){
                             setState(() {
-                              if(PageNumber>1){
+                              if(pageNumber>1){
                                 toTop();
-                                PageNumber--;
+                                pageNumber--;
                               }
                             });
                           },
@@ -199,7 +196,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                           onTap: (){
                             setState(() {
                               toTop();
-                                PageNumber++;
+                              pageNumber++;
                             });
                           },
                           child: Column(
@@ -303,7 +300,6 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                                                 ),
                                               ),
                                             ],
-
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(22),
@@ -311,92 +307,105 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                                                 boxShadow: [kDefaultShadow],
                                               ),
                                                 margin: EdgeInsets.all(10),
-                                                height: 207,
                                                 child: Container(
+                                                  height: MediaQuery.of(context).size.height * 0.29,
                                                   margin: EdgeInsets.only(right: 10),
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     borderRadius: BorderRadius.circular(22),
                                                   ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                  child: Stack(
                                                     children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 8.0),
-                                                        child: Center(
-                                                            child: Text(
-                                                          snapshot.data[i].Title,
-                                                          style: TextStyle(fontSize: 18),
-                                                        )),
-                                                      ),
-                                                      Align(
-                                                        alignment: Alignment.center,
-                                                        child: ListTile(
-                                                          title:
-                                                              Text("Eşya no : " + snapshot.data[i].Id),
-                                                          subtitle: snapshot.data[i].Images == null
-                                                              ? Text(
-                                                                  "Envanter no  : " +
-                                                                      snapshot.data[i].InventoryNo,
-                                                                  style: TextStyle(
-                                                                      fontWeight: FontWeight.bold,
-                                                                      fontSize: 15),
-                                                                )
-                                                              : Text("Null"),
-                                                        ),
-                                                      ),
-                                                      Align(
-                                                        alignment: Alignment.center,
-                                                        child: ListTile(
-                                                          title: Text(
-                                                              "Eşya durumu : " + snapshot.data[i].StatusText),
-                                                          subtitle: Text(
-                                                              "Bulunduğu depo  : " +
-                                                                  snapshot.data[i].StorageTitle,
-                                                              style: TextStyle(
-                                                                  fontWeight: FontWeight.bold,
-                                                                  fontSize: 15)),
-                                                          trailing: snapshot.data[i].Images.length > 0
-                                                              ? Image(
-                                                              image: NetworkImage(
-                                                                  snapshot.data[i].Images[0]["RemotePath"]))
-                                                              : Image(
-                                                                  image: AssetImage("assets/icon-v1.png"),
-                                                                  height: 50,
-                                                                  width: 50,
-                                                                ),
-                                                        ),
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      Column(
                                                         children: [
-                                                          Container(
-                                                            padding: EdgeInsets.symmetric(
-                                                              horizontal: kDefaultPadding*1.5,
-                                                              vertical: kDefaultPadding/4,
-                                                            ),
-                                                            decoration: BoxDecoration(
-                                                                color: Colors.greenAccent,
-                                                              borderRadius: BorderRadius.only(
-                                                                bottomLeft: Radius.circular(22),
-                                                                topRight: Radius.circular(22),
-                                                              )
-                                                            ),
-                                                            child: Icon(Icons.more),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 8.0),
+                                                            child: Center(
+                                                                child: Text(
+                                                              snapshot.data[i].Title,
+                                                              style: TextStyle(fontSize: 18),
+                                                            )),
                                                           ),
                                                           Container(
-                                                            padding: EdgeInsets.symmetric(
-                                                              horizontal: kDefaultPadding*1.5,
-                                                              vertical: kDefaultPadding/4,
+                                                            margin: EdgeInsets.only(right: 100),
+                                                            child: Column(
+                                                              children: [
+                                                                ListTile(
+                                                                  title:
+                                                                  Text("Eşya no : " + snapshot.data[i].Id),
+                                                                  subtitle: snapshot.data[i].Images == null
+                                                                      ? Text(
+                                                                    "Envanter no  : " +
+                                                                        snapshot.data[i].InventoryNo,
+                                                                    style: TextStyle(
+                                                                        fontWeight: FontWeight.bold,
+                                                                        fontSize: 15),
+                                                                  )
+                                                                      : Text("Null"),
+                                                                ),
+                                                                ListTile(
+                                                                  title: Text(
+                                                                      "Eşya durumu : " + snapshot.data[i].StatusText),
+                                                                  subtitle: Text(
+                                                                      "Bulunduğu depo  : " +
+                                                                          snapshot.data[i].StorageTitle,
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight.bold,
+                                                                          fontSize: 15)),
+                                                                ),
+                                                              ],
                                                             ),
-                                                            decoration: BoxDecoration(
-                                                                color: Colors.redAccent,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Align(
+                                                        alignment: Alignment.centerRight,
+                                                        child: Container(
+                                                          width: 110,
+                                                          height: 110,
+                                                          child: snapshot.data[i].Images.length > 0 ? Image(
+                                                              image: NetworkImage(
+                                                                  snapshot.data[i].Images[0]["RemotePath"]))
+                                                              : Image.asset("assets/icon-v1.png") ,
+                                                        )
+                                                      ),
+                                                      Stack(
+                                                        children: [
+                                                          Positioned(
+                                                            left:0,
+                                                            bottom: 0,
+                                                            child: Container(
+                                                              padding: EdgeInsets.symmetric(
+                                                                horizontal: kDefaultPadding*1.5,
+                                                                vertical: kDefaultPadding/4,
+                                                              ),
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors.greenAccent,
                                                                 borderRadius: BorderRadius.only(
-                                                                  bottomRight: Radius.circular(22),
-                                                                  topLeft: Radius.circular(22),
+                                                                  bottomLeft: Radius.circular(22),
+                                                                  topRight: Radius.circular(22),
                                                                 )
+                                                              ),
+                                                              child: Icon(Icons.more),
                                                             ),
-                                                            child: Icon(Icons.delete),
+                                                          ),
+                                                          Positioned(
+                                                            right:0,
+                                                            bottom: 0,
+                                                            child: Container(
+                                                              padding: EdgeInsets.symmetric(
+                                                                horizontal: kDefaultPadding*1.5,
+                                                                vertical: kDefaultPadding/4,
+                                                              ),
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors.redAccent,
+                                                                  borderRadius: BorderRadius.only(
+                                                                    bottomRight: Radius.circular(22),
+                                                                    topLeft: Radius.circular(22),
+                                                                  )
+                                                              ),
+                                                              child: Icon(Icons.delete),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
