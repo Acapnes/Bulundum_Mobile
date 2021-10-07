@@ -4,7 +4,7 @@ bool isLoggedIn = false;
 String sk1 = "";
 String sk2 = "";
 String id = "";
-String server = "production";
+String server = "development";
 String CompanyType = "";
 
 getUrl (String getUrl) {
