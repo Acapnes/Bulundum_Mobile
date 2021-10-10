@@ -152,7 +152,7 @@ packages:
     source: hosted
     version: "0.6.0"
   flutter_spinkit:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: flutter_spinkit
       url: "https://pub.dartlang.org"
