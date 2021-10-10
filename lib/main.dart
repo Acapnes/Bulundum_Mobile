@@ -1,14 +1,21 @@
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
+import 'package:bulundum_mobile/Pages/LoadingPage.dart';
 import 'package:bulundum_mobile/Pages/Login-Register/LoginPage.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'globals.dart' as globals;
+import '../../globals.dart' as globals;
 
 
 void main() {
-  runApp(MyApp());
+  runApp(MaterialApp(
+    title: "örnek",
+    theme: ThemeData.light(),
+    initialRoute: '/',
+    routes: {
+      '/': (context) => mainLoadingPage(),
+      'İkinci': (context) => MainBuluntuList(),
+    }));
 }
 
 class MyApp extends StatelessWidget {
@@ -45,11 +52,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     getData();
   }
 
-  getData() async {
+    getData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    globals.sk1 = sharedPreferences.get("sk1")?? "" ;
-    globals.sk2 = sharedPreferences.get("sk2")?? "" ;
+    globals.sk1 = sharedPreferences.get("sk1") ?? "" ;
+    globals.sk2 = sharedPreferences.get("sk2") ?? "" ;
     if(globals.sk1 != "" && globals.sk2 != ""){
+      await Future.delayed(Duration(seconds: 1));
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -79,27 +87,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     return Scaffold(
-      appBar: AppBar(title: Text("Giriş Ekranı"),centerTitle: true,
-        actions: [
-          IconButton(icon: currenrPage == 0 ? Icon(null) : Icon(Icons.arrow_back_ios),onPressed: (){
-            if(currenrPage!=0){
-            setState(() {
-              currenrPage--;
-            });
-            }
-            pageController.animateToPage(currenrPage, duration: Duration(milliseconds: 500), curve: Curves.easeOutSine);
-          },),
-
-          IconButton(icon: Icon(Icons.arrow_forward_ios),onPressed: (){
-            if(currenrPage!=2){
-              setState(() {
-                currenrPage++;
-              });
-            }
-            pageController.animateToPage(currenrPage, duration: Duration(milliseconds: 500), curve: Curves.easeOutSine);
-          },),
-        ],
-      ),
         body: PageView(
       pageSnapping: true,
       controller: pageController,
@@ -120,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       children: [
         // --- Page 1 ---
         Container(
-          margin: EdgeInsets.all(15),
+          margin: EdgeInsets.only(top: 60),
           child: Column(
             children: <Widget>[
               Container(
@@ -166,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         ),
         // --- Page 2 ---
         Container(
-          margin: EdgeInsets.all(15),
+          margin: EdgeInsets.only(top: 60),
           child: Column(
             children: <Widget>[
               Container(
@@ -212,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         ),
         // --- Page 3 ---
         Container(
-          margin: EdgeInsets.all(15),
+          margin: EdgeInsets.symmetric(horizontal: 30,vertical: 50),
           child: Stack(
             children: <Widget>[
               PositionedTransition(
