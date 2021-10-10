@@ -7,6 +7,13 @@ String id = "";
 String server = "development";
 String CompanyType = "";
 
+
+String buluntuNoktalari = "";
+String kayipNoktalari = "";
+String personelListesi = "";
+String depo = "";
+String rafListesi = "";
+
 getUrl (String getUrl) {
   if(server == "production"){
     return "https://bulundum.com/api/v3/$getUrl";
