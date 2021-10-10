@@ -31,7 +31,7 @@ class StateFulDrawer extends State {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image: AssetImage('img/icon.png'),
+                          image: AssetImage('assets/icon-v1.png'),
                           fit: BoxFit.cover,
                         ),
                       )),

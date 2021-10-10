@@ -2,6 +2,7 @@ import 'package:bulundum_mobile/Buluntu/BuluntuDetaylar.dart';
 import 'package:bulundum_mobile/Buluntu/FotoBuluntuEkle.dart';
 import 'package:bulundum_mobile/Controllers/BottomNavigationBar/mainBNB.dart';
 import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
+import 'package:bulundum_mobile/Controllers/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Controllers/FAB/mainFAB.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -61,50 +62,34 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
         duration: Duration(milliseconds: 1250), curve: Curves.easeInOut);
   }
 
-  _showAlertDialogEkleme(){
+  _showAlertDialogSilme(){
     showDialog(
         context: context,
         builder: (BuildContext context){
           return AlertDialog(
             title: Container(
                 margin: EdgeInsets.only(bottom: 20),
-                child: Row(
-                  children: [
-                    Text("Ne Eklemek İstiyorsunuz?"),
-                    GestureDetector(
-                      onTap: (){
+              child: Text("Silmek istediğinize emin misiniz?")),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    child: ElevatedButton(
+                      onPressed: (){},
+                      child: Text("Sil",style: TextStyle(fontSize: 16)),
+                    ),
+                  ),
+                  Container(
+                    child: ElevatedButton(
+                      onPressed: (){
                         Navigator.pop(context);
                       },
-                      child: Container(
-                        margin: EdgeInsets.only(left: 20),
-                          child: Icon(Icons.cancel,color: Colors.blue,size: 25,)),
+                      child: Text("İptal",style: TextStyle(fontSize: 16),),
                     ),
-                  ],
-                )),
-            actions: <Widget>[
-              Container(
-                margin: EdgeInsets.only(right: 30),
-                child: ElevatedButton(
-                  onPressed: (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                FotoBuluntu()));
-                  },
-                  child: Text("Buluntu",style: TextStyle(fontSize: 16)),
-                ),
+                  ),
+                ],
               ),
-              Container(
-                margin: EdgeInsets.only(right: 30),
-                child: ElevatedButton(
-                  onPressed: (){
-                    Navigator.pop(context);
-                  },
-                  child: Text("Kayıp Eşya",style: TextStyle(fontSize: 16),),
-                ),
-              ),
-
             ],
           );
         }
@@ -118,6 +103,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
     return Scaffold (
       backgroundColor: kPrimaryColor,
       bottomNavigationBar: mainBNB(),
+      drawer: mainDrawer(),
       appBar: AppBar(elevation: 0,title:Text("Buluntu Listesi"),centerTitle: true,),
       floatingActionButton:
       ExpandableFab(
@@ -243,8 +229,8 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                                         itemCount: snapshot.data.length,
                                         itemBuilder: (context, i) {
                                           return Slidable(
-                                            actionPane: SlidableScrollActionPane(),
-                                            actions: <Widget>[
+                                            //actionPane: SlidableScrollActionPane(),
+                                            /*actions: <Widget>[
                                                Container(
                                                  margin: EdgeInsets.only(left: 10,right: 5),
                                                  child: ElevatedButton(
@@ -299,7 +285,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                                                   ),
                                                 ),
                                               ),
-                                            ],
+                                            ],*/
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(22),
@@ -374,37 +360,51 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                                                           Positioned(
                                                             left:0,
                                                             bottom: 0,
-                                                            child: Container(
-                                                              padding: EdgeInsets.symmetric(
-                                                                horizontal: kDefaultPadding*1.5,
-                                                                vertical: kDefaultPadding/4,
+                                                            child: GestureDetector(
+                                                              onTap: (){
+                                                                Navigator.push(
+                                                                    context,
+                                                                    new MaterialPageRoute(
+                                                                        builder: (context) =>
+                                                                            mainBuluntuDetaylar(snapshot.data[i])));
+                                                              },
+                                                              child: Container(
+                                                                padding: EdgeInsets.symmetric(
+                                                                  horizontal: kDefaultPadding*1.5,
+                                                                  vertical: kDefaultPadding/3.5,
+                                                                ),
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors.greenAccent,
+                                                                  borderRadius: BorderRadius.only(
+                                                                    bottomLeft: Radius.circular(22),
+                                                                    topRight: Radius.circular(22),
+                                                                  )
+                                                                ),
+                                                                child: Icon(Icons.more),
                                                               ),
-                                                              decoration: BoxDecoration(
-                                                                  color: Colors.greenAccent,
-                                                                borderRadius: BorderRadius.only(
-                                                                  bottomLeft: Radius.circular(22),
-                                                                  topRight: Radius.circular(22),
-                                                                )
-                                                              ),
-                                                              child: Icon(Icons.more),
                                                             ),
                                                           ),
                                                           Positioned(
                                                             right:0,
                                                             bottom: 0,
-                                                            child: Container(
-                                                              padding: EdgeInsets.symmetric(
-                                                                horizontal: kDefaultPadding*1.5,
-                                                                vertical: kDefaultPadding/4,
+                                                            child: GestureDetector(
+                                                              onTap: (){
+                                                                _showAlertDialogSilme();
+                                                              },
+                                                              child: Container(
+                                                                padding: EdgeInsets.symmetric(
+                                                                  horizontal: kDefaultPadding*1.5,
+                                                                  vertical: kDefaultPadding/3.5,
+                                                                ),
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors.redAccent,
+                                                                    borderRadius: BorderRadius.only(
+                                                                      bottomRight: Radius.circular(22),
+                                                                      topLeft: Radius.circular(22),
+                                                                    )
+                                                                ),
+                                                                child: Icon(Icons.delete),
                                                               ),
-                                                              decoration: BoxDecoration(
-                                                                  color: Colors.redAccent,
-                                                                  borderRadius: BorderRadius.only(
-                                                                    bottomRight: Radius.circular(22),
-                                                                    topLeft: Radius.circular(22),
-                                                                  )
-                                                              ),
-                                                              child: Icon(Icons.delete),
                                                             ),
                                                           ),
                                                         ],
