@@ -1,4 +1,5 @@
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
+import 'package:bulundum_mobile/Pages/Other/FullScreenImage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -11,7 +12,7 @@ class mainBuluntuDetaylar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Detaylar"),
+          title: Text("Buluntu Detayları"),
           centerTitle: true,
         ),
         body: Container(
@@ -39,7 +40,7 @@ class mainBuluntuDetaylar extends StatelessWidget {
                                 child: buluntu.Images.isNotEmpty
                                     ? CarouselSlider.builder(
                                         options: CarouselOptions(
-                                          reverse: true,
+                                          reverse: false,
                                           autoPlay: true,
                                           autoPlayInterval:
                                               Duration(seconds: 2),
@@ -49,7 +50,11 @@ class mainBuluntuDetaylar extends StatelessWidget {
                                             (context, index, realIndex) {
                                           return MaterialButton(
                                             onPressed: () {
-                                              print(index);
+                                              Navigator.push(
+                                                  context,
+                                                  new MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          mainFSImage(buluntu: buluntu,index: index,kayipEsya: null,)));
                                             },
                                             child: Card(
                                               elevation: 20,

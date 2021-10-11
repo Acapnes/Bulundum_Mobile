@@ -17,7 +17,7 @@ class MainBuluntuList extends StatefulWidget {
 }
 
 class _MainBuluntuListState extends State<MainBuluntuList> {
-  List<Buluntu> buluntular = new List<Buluntu>();
+  List<Buluntu> buluntular = [];
   ScrollController _scrollController = ScrollController();
   List data;
   int pageNumber = 1;
@@ -154,7 +154,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                             enabledBorder:InputBorder.none,
                             focusedBorder:InputBorder.none,
                             icon: Icon(Icons.search,color: Colors.white,),
-                            hintText:("Aramak istediğiniz eşya numarasını giriniz."),
+                            hintText:("Buluntu numarasını giriniz..."),
                             hintStyle: TextStyle(color: Colors.white)
                         ),
                       ),

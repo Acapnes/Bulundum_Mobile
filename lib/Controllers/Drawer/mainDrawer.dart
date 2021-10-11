@@ -1,4 +1,6 @@
 import 'package:bulundum_mobile/Buluntu/FotoBuluntuEkle.dart';
+import 'package:bulundum_mobile/KayipEsya/Kay%C4%B1pEsyaListele.dart';
+import 'package:bulundum_mobile/Pages/Other/FullScreenImage.dart';
 import 'package:bulundum_mobile/Pages/Login-Register/LoginPage.dart';
 import 'package:bulundum_mobile/Pages/MainMenu/MenuPage.dart';
 import 'package:bulundum_mobile/main.dart';
@@ -79,6 +81,14 @@ class StateFulDrawer extends State {
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => MainFoto()));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.event_note),
+            title: Text("Kayıp Eşya Listesi"),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MainKayipList()));
             },
           ),
         ],

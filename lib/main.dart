@@ -1,5 +1,5 @@
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
-import 'package:bulundum_mobile/Pages/LoadingPage.dart';
+import 'package:bulundum_mobile/Pages/Other/LoadingPage.dart';
 import 'package:bulundum_mobile/Pages/Login-Register/LoginPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,6 @@ void main() {
     initialRoute: '/',
     routes: {
       '/': (context) => mainLoadingPage(),
-      'İkinci': (context) => MainBuluntuList(),
     }));
 }
 

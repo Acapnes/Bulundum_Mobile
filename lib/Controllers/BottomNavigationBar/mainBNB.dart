@@ -1,5 +1,6 @@
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
 import 'package:bulundum_mobile/Buluntu/FotoBuluntuEkle.dart';
+import 'package:bulundum_mobile/KayipEsya/Kay%C4%B1pEsyaListele.dart';
 import 'package:bulundum_mobile/Pages/Messages/mainMessages.dart';
 import 'package:bulundum_mobile/Pages/Profile/Profile.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _mainBNBState extends State<mainBNB> {
             new MaterialPageRoute(builder: (context) => MainBuluntuList()));
       } else if (_currentIndex == 1) {
         Navigator.push(context,
-            new MaterialPageRoute(builder: (context) => MainFoto()));
+            new MaterialPageRoute(builder: (context) => MainKayipList()));
       } else if (_currentIndex == 2) {
         Navigator.push(context,
             new MaterialPageRoute(builder: (context) => mainProfile()));
@@ -51,7 +52,10 @@ class _mainBNBState extends State<mainBNB> {
     else if (Company == true) {
       if (_currentIndex == 0) {
         Navigator.push(context,
-            new MaterialPageRoute(builder: (context) => MainBuluntuList()));
+            new MaterialPageRoute(builder: (context) => MainKayipList()));
+      }if (_currentIndex == 1) {
+        Navigator.push(context,
+            new MaterialPageRoute(builder: (context) => MainFoto()));
       }  else if (_currentIndex == 2) {
         Navigator.push(context,
             new MaterialPageRoute(builder: (context) => mainProfile()));
@@ -83,7 +87,7 @@ class _mainBNBState extends State<mainBNB> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list_alt_outlined, color: Colors.blueAccent),
-            title: Text('Bildirim Listesi'),
+            title: Text('Kayıp Eşya Listesi'),
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.person, color: Colors.blueAccent),
@@ -102,7 +106,7 @@ class _mainBNBState extends State<mainBNB> {
               Icons.list,
               color: Colors.blueAccent,
             ),
-            title: Text('Eşya Listesi'),
+            title: Text('Kayıp Eşya Listesi'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add, color: Colors.blueAccent),
