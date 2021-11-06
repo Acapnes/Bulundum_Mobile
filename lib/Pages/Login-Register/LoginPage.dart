@@ -1,5 +1,4 @@
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
-import 'package:bulundum_mobile/Controllers/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Pages/Login-Register/RegisterPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +27,6 @@ class _LoginMainState extends State<LoginMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: mainDrawer(),
       body: Container(
         margin: EdgeInsets.only(left: 20,right: 20,top: 75),
         child: Form(
@@ -118,13 +116,17 @@ class _LoginMainState extends State<LoginMain> {
   }
 
   Future<void> login() async {
+    print("Login kodu çalışıyor");
+
     if (passwordController.text.isNotEmpty && emailController.text.isNotEmpty) {
+
       var response = await http.post(Uri.parse(globals.getUrl("login")),
           body: ({
             'Username': emailController.text,
             'Password': passwordController.text,
           }));
       if (response.statusCode == 200) {
+
         Map<String,dynamic> res = jsonDecode(response.body);
         if (res["err"] == 0) {
           print(response.body);

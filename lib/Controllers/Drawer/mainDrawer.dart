@@ -77,14 +77,6 @@ class StateFulDrawer extends State {
           ),
           ListTile(
             leading: Icon(Icons.event_note),
-            title: Text("Foto buluntu"),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MainFoto()));
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.event_note),
             title: Text("Kayıp Eşya Listesi"),
             onTap: () {
               Navigator.push(context,

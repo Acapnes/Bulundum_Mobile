@@ -1,4 +1,9 @@
 library myApp.globals;
+import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+///import '../../globals.dart' as globals;
 
 bool isLoggedIn = false;
 String sk1 = "";
