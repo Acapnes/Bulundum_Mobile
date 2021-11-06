@@ -1,16 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class QRBuluntu extends StatefulWidget {
-  const QRBuluntu({Key key}) : super(key: key);
+class QRScan extends StatefulWidget {
 
   @override
-  _QRBuluntuState createState() => _QRBuluntuState();
+  _QRScanState createState() => _QRScanState();
 }
 
-class _QRBuluntuState extends State<QRBuluntu> {
+class _QRScanState extends State<QRScan> {
   TextEditingController _QrController = new TextEditingController();
   String data;
   bool _flashOn = false;
