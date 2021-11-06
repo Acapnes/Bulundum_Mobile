@@ -1,5 +1,5 @@
 import 'package:bulundum_mobile/Buluntu/FotoBuluntuEkle.dart';
-import 'package:bulundum_mobile/Buluntu/QRBuluntu.dart';
+import 'package:bulundum_mobile/Buluntu/QRMenu/QRMenu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -78,7 +78,7 @@ class mainBuluntuEkle extends StatelessWidget {
                     ),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => QRBuluntu()));
+                          MaterialPageRoute(builder: (context) => QRMenu()));
                     },
                   ),
                 ),
