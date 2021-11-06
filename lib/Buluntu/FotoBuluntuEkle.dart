@@ -11,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:just_audio/just_audio.dart' as ap;
 import 'package:record/record.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../globals.dart' as globals;
 
 class MainFoto extends StatelessWidget {
@@ -26,25 +25,8 @@ class MainFoto extends StatelessWidget {
       home: Scaffold(
         body: FotoBuluntu(),
       ),
-      builder: EasyLoading.init(),
     );
   }
-}
-
-void configLoading() {
-  EasyLoading.instance
-    ..displayDuration = const Duration(milliseconds: 2000)
-    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
-    ..loadingStyle = EasyLoadingStyle.dark
-    ..indicatorSize = 45.0
-    ..radius = 10.0
-    ..progressColor = Colors.yellow
-    ..backgroundColor = Colors.green
-    ..indicatorColor = Colors.yellow
-    ..textColor = Colors.yellow
-    ..maskColor = Colors.blue.withOpacity(0.5)
-    ..userInteractions = true
-    ..dismissOnTap = false;
 }
 
 class FotoBuluntu extends StatefulWidget {
@@ -137,7 +119,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
 
   @override
   void initState() {
-    final status = Permission.microphone.request();
+    final microPerm = Permission.microphone.request();
     imajlarArray.add([]);
     mixedArray.add([]);
   }
@@ -190,7 +172,6 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
   }
 
   Upload() async {
-    //EasyLoading.show(status: 'Loading...',);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var body = {
       'sk1':prefs.get("sk1"),
@@ -213,16 +194,12 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
         }
       }
     }
-    /*var response = await http.post(
-        Uri.parse(
-            "https://dev.bulundum.com/api/v3/items/create"),*/
     var response = await http.post(
         Uri.parse(
             globals.getUrl("create")),
         body: body);
     if (response.statusCode == 200) {
       print(body);
-      //EasyLoading.showSuccess('Great Success!');
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Yükleme başarılı bir şekilde gerçekleşti")));
     } else {
@@ -391,7 +368,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
             ),
           ),
         ),
-        appBar: AppBar(elevation: 0,title:Text("Resimli ve Sesli Buluntu Ekle"),centerTitle: true,
+        appBar: AppBar(backgroundColor: kPrimaryColor,elevation: 0,title:Text("Resimli ve Sesli Buluntu Ekle"),centerTitle: true,
           leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){
             Navigator.push(
                 context,
@@ -407,7 +384,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
               children: <Widget>[
                 SizedBox(
                   width: MediaQuery.of(context).size.width-10,
-                  height: (MediaQuery.of(context).size.height-200) ,
+                  height: MediaQuery.of(context).size.height-200,
                   child: Card(
                     child: Column(
                       children: [
@@ -422,6 +399,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                                 )),
                           )
                               : Container(
+                            margin: EdgeInsets.only(top: 10),
                             height: MediaQuery.of(context).size.height - 200,
                             child: SingleChildScrollView(
                               child: GridView.count(
@@ -972,7 +950,6 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                     mixedArray;
                     AltArray;
                     listViewSize -= 600;
-
                   });
                 },
                 child: Text("Evet"),

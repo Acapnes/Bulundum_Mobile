@@ -110,6 +110,7 @@ class _mainProfileState extends State<mainProfile> {
     };
     var response = await http.post(Uri.parse(globals.getUrl("profile")), body: body);
     if (response.statusCode == 200) {
+      print(response.body);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Hesaptan çıkış işlemi başarısız.")));
@@ -186,7 +187,8 @@ class _mainProfileState extends State<mainProfile> {
       ),
       appBar: AppBar(
         title: Text("Profil"),
-        centerTitle: true,
+        elevation: 0,
+        centerTitle: true, backgroundColor: kPrimaryColor
       ),
       bottomNavigationBar: mainBNB(),
       body: MaterialApp(
@@ -202,7 +204,7 @@ class _mainProfileState extends State<mainProfile> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Container(
-            margin: EdgeInsets.only(top: 20),
+            margin: EdgeInsets.only(top: 5),
             child: Column(
               children: <Widget>[
                 Card(
@@ -414,6 +416,7 @@ class _mainProfileState extends State<mainProfile> {
                                         ),
                                       ),
                                     ),
+                                    SizedBox(height: 20,),
                                   ],
                                 ),
                               ),

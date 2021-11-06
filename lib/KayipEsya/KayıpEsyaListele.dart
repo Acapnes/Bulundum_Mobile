@@ -69,7 +69,7 @@ class _MainKayipListState extends State<MainKayipList> {
       backgroundColor: kPrimaryColor,
       bottomNavigationBar: mainBNB(),
       drawer: mainDrawer(),
-      appBar: AppBar(elevation: 0,title:Text("Kayıp Eşya Listesi"),centerTitle: true,),
+      appBar: AppBar(elevation: 0,title:Text("Kayıp Eşya Listesi"),centerTitle: true,backgroundColor: kPrimaryColor,),
       floatingActionButton:
       ExpandableFab(
         distance: 112.0,

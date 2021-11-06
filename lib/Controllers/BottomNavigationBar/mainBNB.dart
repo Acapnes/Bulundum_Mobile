@@ -73,6 +73,7 @@ class _mainBNBState extends State<mainBNB> {
   Widget build(BuildContext context) {
     if (Company == true) {
       return BottomNavigationBar(
+        elevation: 20,
         onTap: onTabTapped,
         iconSize: 35,
         selectedItemColor: Colors.orangeAccent,
