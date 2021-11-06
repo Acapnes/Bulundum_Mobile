@@ -7,19 +7,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class mainLoadingPage extends StatefulWidget {
   @override
   _mainLoadingPageState createState() => _mainLoadingPageState();
 }
 
-class _mainLoadingPageState extends State<mainLoadingPage>
-    with TickerProviderStateMixin {
+class _mainLoadingPageState extends State<mainLoadingPage> with TickerProviderStateMixin {
   PageController pageController = PageController(initialPage: 0);
   AnimationController _controller;
   bool animRunn = false;
   int currenrPage = 0;
+
 
   @override
   void initState() {
@@ -30,7 +29,13 @@ class _mainLoadingPageState extends State<mainLoadingPage>
       )..forward();
       animRunn = false;
     }
-    getData();
+    //getData();
+  }
+
+  @override
+  dispose() {
+    _controller.dispose(); // you need this
+    super.dispose();
   }
 
   getData() async {
@@ -58,12 +63,6 @@ class _mainLoadingPageState extends State<mainLoadingPage>
     if(response.statusCode==200){
       print("Başarılı");
     }
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
   }
 
   @override
