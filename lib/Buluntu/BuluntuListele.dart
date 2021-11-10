@@ -4,6 +4,7 @@ import 'package:bulundum_mobile/Controllers/BottomNavigationBar/mainBNB.dart';
 import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
 import 'package:bulundum_mobile/Controllers/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Controllers/FAB/mainFAB.dart';
+import 'package:bulundum_mobile/Pages/QRMenu/QRMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -23,6 +24,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
   int pageNumber = 1;
   String dataController;
   bool first = true;
+  double BNBHeight = 70;
 
   Future<List<Buluntu>> ListFoundItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -36,7 +38,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
     data = jsonData["Records"];
     var buluntudata = jsonData["Records"];
     List<Buluntu> buluntular = [];
-    for (var buluntu in buluntudata) {
+    for (var buluntu in buluntudata){
       Buluntu newBuluntu = Buluntu(
           buluntu["Title"],
           buluntu["Id"],
@@ -100,11 +102,22 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold (
+    return Scaffold(
       backgroundColor: kPrimaryColor,
       bottomNavigationBar: mainBNB(),
-      drawer: mainDrawer(),
-      appBar: AppBar(elevation: 0,title:Text("Buluntu Listesi"),centerTitle: true,backgroundColor: kPrimaryColor,),
+      appBar: AppBar(elevation: 0,title:Text("Buluntu Listesi"),centerTitle: true,backgroundColor: kPrimaryColor,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.qr_code),
+            onPressed: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => QRMenu()));
+            },
+          ),
+        ],
+      ),
       floatingActionButton:
       ExpandableFab(
         distance: 112.0,
@@ -117,8 +130,8 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                       builder: (context) => FotoBuluntu()));
             },
             icon: const Icon(Icons.add_box),
-            text: "Eşya Ekle",
-            textWidth: 100,
+            text: "Kayıp Eşya Ekle",
+            textWidth: 140,
             textHeight: 30,
           ),
           ActionButton(
@@ -166,9 +179,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                     onTap: (){
                       setState(() {
                         if(pageNumber>1){
-                          if(buluntular.length>0){
                             toTop();
-                          }
                           pageNumber--;
                         }
                       });
@@ -183,9 +194,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                   GestureDetector(
                     onTap: (){
                       setState(() {
-                        if(buluntular.length>0){
                           toTop();
-                        }
                         pageNumber++;
                       });
                     },

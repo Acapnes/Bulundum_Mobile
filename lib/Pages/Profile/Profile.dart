@@ -169,8 +169,8 @@ class _mainProfileState extends State<mainProfile> {
                   MaterialPageRoute(builder: (context) => FotoBuluntu()));
             },
             icon: const Icon(Icons.add_box),
-            text: "Eşya Ekle",
-            textWidth: 100,
+            text: "Kayıp Eşya Ekle",
+            textWidth: 140,
             textHeight: 30,
           ),
           ActionButton(

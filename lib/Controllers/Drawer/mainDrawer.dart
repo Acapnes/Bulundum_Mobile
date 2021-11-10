@@ -1,8 +1,6 @@
-import 'package:bulundum_mobile/Buluntu/FotoBuluntuEkle.dart';
+import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
 import 'package:bulundum_mobile/KayipEsya/Kay%C4%B1pEsyaListele.dart';
-import 'package:bulundum_mobile/Pages/Other/FullScreenImage.dart';
 import 'package:bulundum_mobile/Pages/Login-Register/LoginPage.dart';
-import 'package:bulundum_mobile/Pages/MainMenu/MenuPage.dart';
 import 'package:bulundum_mobile/main.dart';
 import 'package:flutter/material.dart';
 
@@ -22,13 +20,13 @@ class StateFulDrawer extends State {
           Container(
             width: double.infinity,
             padding: EdgeInsets.all((20)),
-            color: Theme.of(context).primaryColor,
+            color: kPrimaryColor,
             child: Center(
               child: Column(
                 children: <Widget>[
                   Container(
-                      width: 150,
-                      height: 150,
+                      width: 100,
+                      height: 100,
                       margin: EdgeInsets.only(top: 10, bottom: 15),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
@@ -44,7 +42,7 @@ class StateFulDrawer extends State {
                         style: TextStyle(fontSize: 20, color: Colors.white),
                       )),
                   Text(
-                    "*********@hotmail.com",
+                    "Bulundum@hotmail.com",
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ],
@@ -57,30 +55,6 @@ class StateFulDrawer extends State {
             onTap: () {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => MyApp()));
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.event_note),
-            title: Text("Menü"),
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MainMenu()));
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.event_note),
-            title: Text("Login"),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginMain()));
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.event_note),
-            title: Text("Kayıp Eşya Listesi"),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MainKayipList()));
             },
           ),
         ],

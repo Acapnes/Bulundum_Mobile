@@ -132,10 +132,6 @@ class _mainLoadingPageState extends State<mainLoadingPage> with TickerProviderSt
                                   LoginMain())); //***LoginMain
                     }
                   },
-                  child: Container(
-                      child: Image(
-                    image: AssetImage("img/right_arrow.png"),
-                  )),
                 ),
               ),
             ),

@@ -368,14 +368,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
             ),
           ),
         ),
-        appBar: AppBar(backgroundColor: kPrimaryColor,elevation: 0,title:Text("Resimli ve Sesli Buluntu Ekle"),centerTitle: true,
-          leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        MainBuluntuList()));
-          },),),
+        appBar: AppBar(backgroundColor: kPrimaryColor,elevation: 0,title:Text("Resimli ve Sesli Buluntu Ekle"),centerTitle: true,),
         body: SingleChildScrollView(
           controller: _bodyScrollController,
           child: Container(
@@ -880,7 +873,6 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
                     Navigator.pop(context);
                     Upload();
                   }
-
                 },
                 child: Text("Evet"),
               ),
@@ -967,5 +959,4 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
   }
 }
 
-class AltEsyaNew {
-}
+class AltEsyaNew {}

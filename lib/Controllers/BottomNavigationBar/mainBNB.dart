@@ -12,6 +12,7 @@ class mainBNB extends StatefulWidget {
 }
 
 class _mainBNBState extends State<mainBNB> {
+  double BNBHeight = 70;
   bool Company = false;
   int _currentIndex = 0;
 
@@ -55,7 +56,7 @@ class _mainBNBState extends State<mainBNB> {
             new MaterialPageRoute(builder: (context) => MainKayipList()));
       }if (_currentIndex == 1) {
         Navigator.push(context,
-            new MaterialPageRoute(builder: (context) => MainFoto()));
+            new MaterialPageRoute(builder: (context) => MainKayipList()));
       }  else if (_currentIndex == 2) {
         Navigator.push(context,
             new MaterialPageRoute(builder: (context) => mainProfile()));
@@ -72,28 +73,31 @@ class _mainBNBState extends State<mainBNB> {
   @override
   Widget build(BuildContext context) {
     if (Company == true) {
-      return BottomNavigationBar(
-        elevation: 20,
-        onTap: onTabTapped,
-        iconSize: 35,
-        selectedItemColor: Colors.orangeAccent,
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.list,
-              color: Colors.blueAccent,
+      return Container(
+        height: BNBHeight,
+        child: BottomNavigationBar(
+          elevation: 20,
+          onTap: onTabTapped,
+          iconSize: 35,
+          selectedItemColor: Colors.orangeAccent,
+          currentIndex: _currentIndex,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.list,
+                color: Colors.blueAccent,
+              ),
+              title: Text('Buluntu Listesi'),
             ),
-            title: Text('Buluntu Listesi'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt_outlined, color: Colors.blueAccent),
-            title: Text('Kayıp Eşya Listesi'),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person, color: Colors.blueAccent),
-              title: Text('Profil')),
-        ],
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list_alt_outlined, color: Colors.blueAccent),
+              title: Text('Kayıp Eşya Listesi'),
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person, color: Colors.blueAccent),
+                title: Text('Profil')),
+          ],
+        ),
       );
     } else {
       return BottomNavigationBar(

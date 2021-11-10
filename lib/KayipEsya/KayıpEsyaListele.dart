@@ -68,7 +68,6 @@ class _MainKayipListState extends State<MainKayipList> {
     return Scaffold (
       backgroundColor: kPrimaryColor,
       bottomNavigationBar: mainBNB(),
-      drawer: mainDrawer(),
       appBar: AppBar(elevation: 0,title:Text("Kayıp Eşya Listesi"),centerTitle: true,backgroundColor: kPrimaryColor,),
       floatingActionButton:
       ExpandableFab(
