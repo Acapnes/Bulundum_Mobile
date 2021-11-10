@@ -1,6 +1,6 @@
-import 'package:bulundum_mobile/Buluntu/QRMenu/QRCode.dart';
-import 'package:bulundum_mobile/Buluntu/QRMenu/QRScan.dart';
 import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
+import 'package:bulundum_mobile/Pages/QRMenu/QRCode.dart';
+import 'package:bulundum_mobile/Pages/QRMenu/QRScan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
