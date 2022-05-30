@@ -1,194 +1,174 @@
 import 'dart:convert';
-import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
-import 'package:bulundum_mobile/Buluntu/FotoBuluntuEkle.dart';
 import 'package:bulundum_mobile/Controllers/BottomNavigationBar/mainBNB.dart';
 import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
-import 'package:bulundum_mobile/Controllers/Drawer/mainDrawer.dart';
-import 'package:bulundum_mobile/Controllers/FAB/mainFAB.dart';
+import 'package:bulundum_mobile/Pages/Help/Help.dart';
 import 'package:flutter/widgets.dart';
 import 'package:bulundum_mobile/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../globals.dart' as globals;
 
-class mainProfile extends StatefulWidget {
+class MainProfile extends StatefulWidget {
   @override
-  _mainProfileState createState() => _mainProfileState();
+  _MainProfileState createState() => _MainProfileState();
 }
 
-class _mainProfileState extends State<mainProfile> {
-  int status = 1;
-  bool Company = false, isConnected = false;
-  Color statusFontColor = Colors.green;
-  bool isChecked = true;
+class _MainProfileState extends State<MainProfile> {
+  var profileId;
   TextEditingController textFirstNameController = TextEditingController();
   TextEditingController textLastNameController = TextEditingController();
-  TextEditingController textEmailController = TextEditingController();
-  TextEditingController textPhoneController = TextEditingController();
+  TextEditingController textUserNameController = TextEditingController();
   TextEditingController textPasswordController = TextEditingController();
-
 
   @override
   void initState() {
     super.initState();
-    openProfile();
-    print(globals.id);
+    initialGet();
   }
 
-  printType() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    print(("CompanyType:"));
-    print(prefs.get("CompanyType"));
-
+  deleteProfile() async {
+    var url = 'http://192.168.1.33/mobiledb/auth/profileDelete.php';
+    var response = await http.post(Uri.parse(url),
+        body: ({
+          'id': profileId,
+        }));
+    if(response.statusCode == 200)
+    {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove("name");
+      prefs.remove("surname");
+      prefs.remove("username");
+      prefs.remove("password");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MyHomePage()));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Hesap silme işlemi başarılı.")));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Hesap silme işlemi başarısız.")));
+    }
   }
 
-  openProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final uri = Uri.https("dev.bulundum.com", "/api/v3/profile", {
-      'sk1': prefs.get("sk1"),
-      'sk2': prefs.get("sk2"),
-    });
-    var response = await http.get(uri);
-    var jsonData = jsonDecode(response.body);
-
-    prefs.setString('Firstname', jsonData["Firstname"]);
-    prefs.setString('Lastname', jsonData["Lastname"]);
-    prefs.setString('Email', jsonData["Email"]);
-    prefs.setString('Phone', jsonData["Phone"]);
-    setState(() {
-      Company = prefs.get("CompanyType") != "ctNone";
-      if (jsonData["inOffice"]) {
-        status = 1;
-        statusFontColor = Colors.green;
-      } else {
-        status = 0;
-        statusFontColor = Colors.red;
-      }
-      textFirstNameController.text = jsonData["Firstname"];
-      textLastNameController.text = jsonData["Lastname"];
-      textEmailController.text = jsonData["Email"];
-      textPhoneController.text = jsonData["Phone"];
-      isConnected = true;
-    });
+  profileUptade() async {
+    var url = 'http://192.168.1.33/mobiledb/auth/profileupdate.php';
+    var response = await http.post(Uri.parse(url),
+        body: ({
+          'id': profileId,
+          'name': textFirstNameController.text,
+          'surname': textLastNameController.text,
+          'username': textUserNameController.text,
+          'password': textPasswordController.text,
+        }));
+    if(response.statusCode == 200)
+    {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString("name", textFirstNameController.text);
+      prefs.setString("surname", textLastNameController.text);
+      prefs.setString("username", textUserNameController.text);
+      prefs.setString("password", textPasswordController.text);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Güncelleme işlemi başarılı.")));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Güncelleme işlemi başarısız.")));
+    }
   }
 
   logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var body = {
-      'sk1': prefs.get("sk1"),
-      'sk2': prefs.get("sk2"),
-
-    };
-    var response = await http.post(Uri.parse(globals.getUrl("logout")), body: body);
-    if (response.statusCode == 200) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
-      prefs.remove("sk1");
-      prefs.remove("sk2");
-      prefs.remove("CompanyType");
-    } else {
+    var url = 'http://192.168.1.33/mobiledb/auth/logout.php';
+    var response = await http.post(Uri.parse(url),
+        body: ({
+          'username': textFirstNameController.text,
+          'password': textPasswordController.text,
+        }));
+    if(response.statusCode == 200)
+      {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.remove("username");
+        prefs.remove("password");
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MyHomePage()));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Hesaptan çıkış işlemi başarılı.")));
+      } else {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Hesaptan çıkış işlemi başarısız.")));
     }
   }
 
-  save() async {
+  initialGet() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('Firstname', textFirstNameController.text);
-    prefs.setString('Lastname', textLastNameController.text);
-    prefs.setString('Email', textEmailController.text);
-    prefs.setString('Phone', textPhoneController.text);
-    var body = {
-      'sk1': prefs.get("sk1"),
-      'sk2': prefs.get("sk2"),
-      'Firstname': prefs.get("Firstname"),
-      'Lastname': prefs.get("Lastname"),
-      'Email': prefs.get("Email"),
-      'Phone': prefs.get("Phone"),
-      'Password': textPasswordController.text,
-    };
-    var response = await http.post(Uri.parse(globals.getUrl("profile")), body: body);
-    if (response.statusCode == 200) {
-      print(response.body);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Hesaptan çıkış işlemi başarısız.")));
+    var url = "http://192.168.1.33/mobiledb/auth/userInfo.php";
+    var response = await http.post(Uri.parse(url),
+        body: ({
+          'username': prefs.get("username"),
+          'password': prefs.get("password"),
+        }));
+    if(response.statusCode == 200)
+    {
+      var jsonData = jsonDecode(response.body);
+      textFirstNameController.text = jsonData["name"];
+      textLastNameController.text = jsonData["surname"];
+      textUserNameController.text = jsonData["username"];
+      textPasswordController.text = jsonData["password"];
+      setState(() {
+        profileId = jsonData["id"];
+      });
     }
-  }
-
-  inOffice() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var body = {
-      'sk1': prefs.get("sk1"),
-      'sk2': prefs.get("sk2"),
-      'inOffice': status == 1 ? "1" : "0",
-    };
-    var response = await http.post(Uri.parse(globals.getUrl("profile")), body: body);
-    if (response.statusCode == 200) {
-      print(response.body);
-    } else {
+    else{
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Hesaptan çıkış işlemi başarısız.")));
+          SnackBar(content: Text("Hesap bilgilerini çekme işlemi başarısız.")));
     }
-  }
-
-  changeServer() async {
-    setState(() {
-      globals.server = globals.server == "production" ? "development" : "production";
-    });
-    print(globals.server);
-  }
-
-  void _showAction(BuildContext context, int index) {
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text("s"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('CLOSE'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: ExpandableFab(
-        distance: 112.0,
-        children: [
-          ActionButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FotoBuluntu()));
-            },
-            icon: const Icon(Icons.add_box),
-            text: "Kayıp Eşya Ekle",
-            textWidth: 140,
-            textHeight: 30,
-          ),
-          ActionButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MainBuluntuList()));
-            },
-            icon: const Icon(Icons.add),
-            text: "Buluntu Ekle",
-            textWidth: 140,
-            textHeight: 30,
-          ),
-        ],
-      ),
       appBar: AppBar(
         title: Text("Profil"),
         elevation: 0,
-        centerTitle: true, backgroundColor: kPrimaryColor
+        centerTitle: true, backgroundColor: kPrimaryColor,
+        actions: [
+          PopupMenuButton(
+              icon: Icon(Icons.filter_list),
+              iconSize: 20,
+              onSelected: (value){
+                if(value==1)
+                  logout();
+                else if(value ==2)
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => MainHelp()));
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  padding: EdgeInsets.only(right: 0,left: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout,color: Colors.black),
+                      Padding(
+                        padding: const EdgeInsets.only(left:8.0),
+                        child: Text("Hesaptan Çık"),
+                      ),
+                    ],
+                  ),
+                  value: 1,
+                ),
+                PopupMenuItem(
+                  padding: EdgeInsets.only(right: 0,left: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.help,color: Colors.black),
+                      Padding(
+                        padding: const EdgeInsets.only(left:8.0),
+                        child: Text("Yardım"),
+                      ),
+                    ],
+                  ),
+                  value: 2,
+                ),
+              ]),
+        ],
       ),
       bottomNavigationBar: mainBNB(),
       body: MaterialApp(
@@ -197,9 +177,7 @@ class _mainProfileState extends State<mainProfile> {
             accentColor: kPrimaryColor,
             visualDensity: VisualDensity.adaptivePlatformDensity,
             fontFamily: 'Ubuntu'),
-        home: isConnected == false ? Center(
-          child: CircularProgressIndicator(),
-        ) : Container(
+        home: Container(
           color: kPrimaryColor,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -207,99 +185,25 @@ class _mainProfileState extends State<mainProfile> {
             margin: EdgeInsets.only(top: 5),
             child: Column(
               children: <Widget>[
-                Card(
-                  elevation: 20,
-                  child: Container(
-                    height: 175,
-                    width: MediaQuery.of(context).size.width - 20,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: globals.id == "88" || globals.id == "12" ||
-                                 globals.id == "62" || globals.id == "89" ||
-                                 globals.id == "94" || globals.id == "95" ||
-                                 globals.id == "117" || globals.id == "119" ||
-                                 globals.id == "140" || globals.id == "141"
-                              ? Container(
-                            child: IconButton(
-                              onPressed: (){
-                                changeServer();
-                              },
-                              icon: Icon(Icons.swap_horiz,size: 30,),
-                                ),
-                          ) : Container()
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 30),
-                          child: Center(
-                            child: SizedBox(
-                              height: 125,
-                              width: 125,
-                              child: CircleAvatar(
-                                maxRadius: 20,
-                                backgroundImage:
-                                    AssetImage("img/circle-avatar.jpg"),
-                              ),
+                Container(
+                  height: 150,
+                  width: MediaQuery.of(context).size.width - 20,
+                  child: Stack(
+                    children: [
+                      Container(
+                        child: Center(
+                          child: SizedBox(
+                            height: 125,
+                            width: 125,
+                            child: CircleAvatar(
+                              maxRadius: 20,
+                              backgroundImage:
+                              AssetImage("img/circle-avatar.jpg"),
                             ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(right: 20,bottom: 7),
-                          child: Company
-                              ? Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                          margin: EdgeInsets.only(left: 100),
-                                          child: status == 1
-                                              ? Text(
-                                                  "İş Yerindeyim",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: statusFontColor,
-                                                  ),
-                                                )
-                                              : Text(
-                                                  "İş Yerinde Değilim",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: statusFontColor,
-                                                  ),
-                                                )),
-                                      GestureDetector(
-                                        child: Container(
-                                          width: 20,
-                                            margin: EdgeInsets.only(right: 50,left: 20),
-                                            child: Icon(
-                                                Icons.swap_horizontal_circle)),
-                                        onTap: () {
-                                          if (status != 1) {
-                                            setState(() {
-                                              status = 1;
-                                              statusFontColor = Colors.green;
-                                            });
-                                          } else {
-                                            setState(() {
-                                              status = 0;
-                                              statusFontColor = Colors.red;
-                                            });
-                                          }
-                                          inOffice();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : null,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
@@ -345,18 +249,7 @@ class _mainProfileState extends State<mainProfile> {
                                           hintText: "Email",
                                         ),
                                         autocorrect: false,
-                                        controller: textEmailController,
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.all(10),
-                                      child: TextFormField(
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: "Telefon numaranız",
-                                        ),
-                                        autocorrect: false,
-                                        controller: textPhoneController,
+                                        controller: textUserNameController,
                                       ),
                                     ),
                                     Container(
@@ -374,12 +267,14 @@ class _mainProfileState extends State<mainProfile> {
                                       margin: EdgeInsets.only(
                                           top: 10, left: 10, right: 10),
                                       child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            primary: Colors.lightGreen),
                                         onPressed: () {
-                                          save();
+                                          profileUptade();
                                         },
                                         child: ListTile(
                                           title: Text(
-                                            "Kaydet",
+                                            "Profili Güncelle",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 18),
@@ -397,7 +292,7 @@ class _mainProfileState extends State<mainProfile> {
                                           top: 10, left: 10, right: 10),
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                            primary: Colors.red),
+                                            primary: Colors.orange),
                                         onPressed: () {
                                           logout();
                                         },
@@ -410,6 +305,30 @@ class _mainProfileState extends State<mainProfile> {
                                           ),
                                           trailing: Icon(
                                             Icons.logout,
+                                            color: Colors.white,
+                                            size: 35,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                          top: 10, left: 10, right: 10),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            primary: Colors.red),
+                                        onPressed: () {
+                                          deleteProfile();
+                                        },
+                                        child: ListTile(
+                                          title: Text(
+                                            "Hesabı Sil",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18),
+                                          ),
+                                          trailing: Icon(
+                                            Icons.delete,
                                             color: Colors.white,
                                             size: 35,
                                           ),

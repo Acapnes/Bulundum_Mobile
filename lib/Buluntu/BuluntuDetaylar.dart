@@ -1,147 +1,221 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
+import 'package:http/http.dart' as http;
 import 'package:bulundum_mobile/Buluntu/BuluntuListele.dart';
-import 'package:bulundum_mobile/Pages/Other/FullScreenImage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:image_picker/image_picker.dart';
 
-class mainBuluntuDetaylar extends StatelessWidget {
-  Buluntu buluntu;
-
+class mainBuluntuDetaylar extends StatefulWidget {
+  Item buluntu;
   mainBuluntuDetaylar(this.buluntu);
+
+  @override
+  _mainBuluntuDetaylarState createState() => _mainBuluntuDetaylarState();
+}
+
+class _mainBuluntuDetaylarState extends State<mainBuluntuDetaylar> {
+
+  TextEditingController itemNameController = TextEditingController();
+  TextEditingController itemLocationController = TextEditingController();
+  TextEditingController commentController = TextEditingController();
+
+  final imagePicker = ImagePicker();
+  File imageFile;
+  String imageData;
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// TextEditingControllers value initialize
+    itemNameController.text = widget.buluntu.item_name;
+    itemLocationController.text = widget.buluntu.item_location;
+    commentController.text = widget.buluntu.comment;
+  }
+
+  getImageMainBuluntu() async {
+    final image = await imagePicker.pickImage(source: ImageSource.camera);
+    setState(() {
+      if (image != null) {
+        imageFile = File(image.path);
+        imageData = base64Encode(imageFile.readAsBytesSync());
+        widget.buluntu.item_photo = imageData;
+      }});
+  }
+
+  updateItem() async {
+    var url = 'http://192.168.1.33/mobiledb/item/itemupdate.php';
+    var response = await http.post(Uri.parse(url),
+    body: ({
+      'item_id': widget.buluntu.item_id,
+      'item_name': itemNameController.text,
+      'item_photo': widget.buluntu.item_photo,
+      'item_location': itemLocationController.text,
+      'comment': commentController.text
+    }));
+    if(response.statusCode == 200){
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Güncelleme işlemi başarılı.")));
+      setState((){});
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Güncelleme işlemi başarısız.")));
+    }
+  }
+
+  removeItem() async {
+    var url = 'http://192.168.1.33/mobiledb/item/itemdelete.php';
+    var response = await http.post(Uri.parse(url),
+        body: ({
+          'item_id': widget.buluntu.item_id,
+        }));
+    if(response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Silme işlemi başarılı.")));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MainBuluntuList()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Silme işlemi başarısız.")));
+    }
+  }
+
+  removePhoto() async {
+    var url = 'http://192.168.1.33/mobiledb/item/itemphotodelete.php';
+    var response = await http.post(Uri.parse(url),
+        body: ({
+          'item_id': widget.buluntu.item_id,
+        }));
+    if(response.statusCode == 200) {
+      setState(() {
+        widget.buluntu.item_photo = "null";
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Fotoğraf kaldırma işlemi başarılı.")));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Fotoğraf kaldırma işlemi başarısız.")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: kPrimaryColor,
           title: Text("Buluntu Detayları"),
           centerTitle: true,
         ),
-        body: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: <Widget>[
-              Theme(
-                  data: Theme.of(context).copyWith(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
+        body: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height / 4 - 20,
+                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  child: widget.buluntu.item_photo != "null" ?
+                  Image.memory(
+                    base64Decode(widget.buluntu.item_photo), fit: BoxFit.fill,
+                  ): FlatButton(
+                    onPressed: () => getImageMainBuluntu(),
+                    child: Text("Fotoğraf Ekle"),
                   ),
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        color: Colors.greenAccent,
-                        margin: EdgeInsets.only(bottom: 20),
-                        child: Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 50.0, top: 20),
-                            child: Container(
-                                child: buluntu.Images.isNotEmpty
-                                    ? CarouselSlider.builder(
-                                        options: CarouselOptions(
-                                          reverse: false,
-                                          autoPlay: true,
-                                          autoPlayInterval:
-                                              Duration(seconds: 2),
-                                        ),
-                                        itemCount: buluntu.Images.length,
-                                        itemBuilder:
-                                            (context, index, realIndex) {
-                                          return MaterialButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  new MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          mainFSImage(buluntu: buluntu,index: index,kayipEsya: null,)));
-                                            },
-                                            child: Card(
-                                              elevation: 20,
-                                              child: Container(
-                                                margin: EdgeInsets.all(20),
-                                                child: Image.network(
-                                                    buluntu.Images[index]
-                                                        ["RemotePath"]),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      )
-                                    : Container(
-                                        width: 200,
-                                        height: 200,
-                                        child: Image.asset(
-                                            "assets/icon-v1.png")))),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          width: 250,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: Colors.orangeAccent, width: 4.5),
-                          ),
-                          child: Center(
-                              child: buluntu.Title != ""
-                                  ? Text(
-                                      buluntu.Title,
-                                      style: TextStyle(fontSize: 18),
-                                    )
-                                  : Text("Boş")),
-                        ),
-                      )
-                    ],
-                  )),
-              Container(
-                margin: EdgeInsets.all(25),
-                child: Column(
-                  children: <Widget>[
-                    Align(
-                      child: ListTile(
-                        title: Text("Kayıt numarası : ",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w300)),
-                        subtitle: buluntu.Title != ""
-                            ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                  buluntu.InventoryNo,
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                            )
-                            : Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Boş"),
-                            ),
-                      ),
-                    ),
-                    Align(
-                      child: ListTile(
-                        title: Text("Kayıt numarası : ",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w300)),
-                        subtitle: buluntu.PrivateDetails != ""
-                            ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            buluntu.PrivateDetails != null ? buluntu.PrivateDetails : "",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        )
-                            : Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Boş"),
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
-              ),
-            ],
+                Container(
+                  width: 250,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                        color: Colors.orangeAccent, width: 4.5),
+                  ),
+                  child: Center(
+                      child: widget.buluntu.item_id != ""
+                          ? Text(
+                        "No: " + widget.buluntu.item_id,
+                        style: TextStyle(fontSize: 18),
+                      )
+                          : Text("Boş")),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 25,vertical: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Eşya İsmi",
+                          ),
+                          autocorrect: false,
+                          controller: itemNameController,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Eşya Konumu",
+                          ),
+                          autocorrect: false,
+                          controller: itemLocationController,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: TextFormField(
+                          maxLines: 6,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Eşya Yorumu",
+                          ),
+                          autocorrect: false,
+                          controller: commentController,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      FlatButton(
+                          height: 50,
+                          color: Colors.yellow,
+                          onPressed: () => updateItem(),
+                          child: Text("Güncelle")
+                      ),
+                      FlatButton(
+                          height: 50,
+                          color: Colors.red,
+                          onPressed: () => removeItem(),
+                          child: Text("Sil")
+                      ),
+                      FlatButton(
+                          height: 50,
+                          color: Colors.orangeAccent,
+                          onPressed: () => {
+                            if(widget.buluntu.item_photo != "null")
+                              removePhoto()
+                            else
+                              getImageMainBuluntu()
+                          },
+                          child: widget.buluntu.item_photo != "null" ? Text("Fotoğrafı Kaldır") :Text("Fotoğraf Ekle"),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ));
   }

@@ -1,37 +1,56 @@
-import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:flutter/rendering.dart';
 
 class mainQRCode extends StatefulWidget {
+  String qrData;
 
+  mainQRCode(this.qrData);
   @override
   _mainQRCodeState createState() => _mainQRCodeState();
 }
 
 class _mainQRCodeState extends State<mainQRCode> {
+  final qrdataFeed = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("Qr Kod = "+widget.qrData);
+  }
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Stack(
-          children: [
-            Center(
-              child: Container(
-                height: 300,
-                width: 300,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  border: Border.all(width: 2,color: kPrimaryColor),
-                ),
-                child: Center(
-                  child: Container(
-                    height: 200,
-                    width: 200,
-                    child: Image(image: AssetImage("assets/icon-v1.png"),),
-                  ),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              QrImage(
+                //plce where the QR Image will be shown
+                data: widget.qrData,
+              ),
+              SizedBox(
+                height: 40.0,
+              ),
+              Text(
+                "Eşyanın QR Kodu",
+                style: TextStyle(fontSize: 20.0),
+              ),
+              TextField(
+                enabled: false,
+                controller: qrdataFeed,
+                decoration: InputDecoration(
+                  hintText: widget.qrData,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+      ),
     );
   }
 }

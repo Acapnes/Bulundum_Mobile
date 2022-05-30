@@ -154,8 +154,8 @@ class _ExpandableFabState extends State<ExpandableFab>
     final count = widget.children.length;
     final step = 90.0 / (count - 1);
     for (var i = 0, angleInDegrees = 0.0;
-        i < count;
-        i++, angleInDegrees += step) {
+    i < count;
+    i++, angleInDegrees += step) {
       children.add(
         _ExpandingActionButton(
           directionInDegrees: angleInDegrees,
@@ -274,9 +274,9 @@ class ActionButton extends StatelessWidget {
           ),
           child: Center(
               child: Text(
-            text,
-            style: TextStyle(fontSize: 16, color: Colors.black),
-          )),
+                text,
+                style: TextStyle(fontSize: 16, color: Colors.black),
+              )),
         ),
         Container(
           height: 60,

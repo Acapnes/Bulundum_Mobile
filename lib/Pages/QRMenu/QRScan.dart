@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class QRScan extends StatefulWidget {
 
@@ -9,88 +10,83 @@ class QRScan extends StatefulWidget {
 }
 
 class _QRScanState extends State<QRScan> {
-  TextEditingController _QrController = new TextEditingController();
-  String data;
-  bool _flashOn = false;
-  bool _frontCam = false;
-  GlobalKey _qrKey = GlobalKey();
-  QRViewController _controller;
+  String qrCode = '';
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: Colors.blueGrey,
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          QRView(
-            key: _qrKey,
-            overlay: QrScannerOverlayShape(
-              borderColor: Colors.white,
+          Text(
+            'Tarama Sonucu',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
             ),
-            onQRViewCreated: (QRViewController controller) {
-              this._controller = controller;
-              controller.scannedDataStream.listen((val) {
-                if (mounted) {
-                  _controller.dispose();
-                  Navigator.pop(context, val);
-                }
-              });
-            },
           ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              margin: EdgeInsets.only(top: 80),
-              child: Text(
-                "QR Kod Okuyucu",
-                style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+          SizedBox(height: 8),
+          Text(
+            '$qrCode',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 50),
+          Container(
+            margin: EdgeInsets.only(
+                top: 10, left: 10, right: 10),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  primary: kPrimaryColor),
+              onPressed: () {
+                scanQRCode();
+              },
+              child: ListTile(
+                title: Text(
+                  "QR Kodu Tara",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18),
+                ),
+                trailing: Icon(
+                  Icons.qr_code,
+                  color: Colors.white,
+                  size: 35,
+                ),
               ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ButtonBar(
-              alignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                IconButton(
-                  color: Colors.white,
-                  icon: Icon(_flashOn ? Icons.flash_on : Icons.flash_off,
-                      size: 35),
-                  onPressed: () {
-                    setState(() {
-                      _flashOn = !_flashOn;
-                    });
-                    _controller.toggleFlash();
-                  },
-                ),
-                IconButton(
-                  color: Colors.white,
-                  icon: Icon(_frontCam ? Icons.camera_front : Icons.camera_rear,
-                      size: 35),
-                  onPressed: () {
-                    setState(() {
-                      _frontCam = !_frontCam;
-                    });
-                    _controller.flipCamera();
-                  },
-                ),
-                IconButton(
-                  color: Colors.white,
-                  icon: Icon(
-                    Icons.close,
-                    size: 35,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
             ),
           ),
         ],
       ),
-    );
+    ),
+  );
+
+  Future<void> scanQRCode() async {
+    try {
+      final qrCode = await FlutterBarcodeScanner.scanBarcode(
+        '#ff6666',
+        'Cancel',
+        true,
+        ScanMode.QR,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        this.qrCode = qrCode.isEmpty
+            ? ''
+            : qrCode == '-1'
+            ? ''
+            : qrCode;
+        print(qrCode);
+      });
+    } on PlatformException {
+      qrCode = 'Taramada bir hata oldu.';
+    }
   }
 }

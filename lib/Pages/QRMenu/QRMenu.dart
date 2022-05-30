@@ -5,7 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class QRMenu extends StatefulWidget {
+  String qrData;
 
+  QRMenu(this.qrData);
   @override
   _QRBMenuState createState() => _QRBMenuState();
 }
@@ -16,29 +18,29 @@ class _QRBMenuState extends State<QRMenu> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _Tabcontroller = TabController(length: 2, vsync: this, initialIndex: 1);
+    _Tabcontroller = TabController(length: 2, vsync: this, initialIndex: 0);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("QR Kod"),centerTitle: true,backgroundColor: kPrimaryColor,
+      appBar: AppBar(title: Text("QR Kod Menu"),centerTitle: true,backgroundColor: kPrimaryColor,
         bottom: TabBar(
           controller: _Tabcontroller,
           indicatorColor: Colors.white,
           tabs: [
             Tab(
-              text: "QR KODUM",
+              text: "QR Kodu",
             ),
             Tab(
-              text: "KODU TARA",
+              text: "Qr Tarayıcı",
             ),
           ],
         ),
       ),
       body: TabBarView(
           controller: _Tabcontroller,
-          children: [mainQRCode(), QRScan()]),
+          children: [mainQRCode(widget.qrData), QRScan()]),
     );
   }
 }

@@ -4,14 +4,12 @@ import 'package:bulundum_mobile/Pages/Login-Register/LoginPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../globals.dart' as globals;
 
 class Init {
   getSK() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    globals.sk1 = sharedPreferences.get("sk1") ?? "" ;
-    globals.sk2 = sharedPreferences.get("sk2") ?? "" ;
-    print(globals.sk1);
+    if(sharedPreferences.get("username") != null && sharedPreferences.get("password") != null)
+      print(sharedPreferences.get("username"));
   }
 
   Init._();
@@ -36,11 +34,7 @@ class MyApp extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return MaterialApp(home: mainLoadingPage());
         } else {
-          if(globals.sk1 !="" && globals.sk2 != ""){
-            return MaterialApp(home: MainBuluntuList());
-          } else{
-            return MaterialApp(home: MyHomePage());
-          }
+          return MaterialApp(home: MainBuluntuList());
         }
       },
     );
@@ -54,8 +48,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   PageController pageController = PageController(initialPage: 0);
-  bool animRunn = false;
-  int currenrPage=0;
 
   @override
   void dispose() {
@@ -79,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     height: MediaQuery.of(context).size.height / 3,
                     margin: EdgeInsets.only(top: 80),
                     child: Image(
-                      image: AssetImage("assets/icon-v1.png"),
+                      image: AssetImage("assets/lost_item.png"),
                     ),
                   ),
                   Container(
@@ -96,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     child: ElevatedButton(
                       onPressed: () async {
                         SharedPreferences prefs = await SharedPreferences.getInstance();
-                        if (prefs.get("sk1") != null && prefs.get("sk2")  != null) {
+                        if (prefs.get("username") != null && prefs.get("password")  != null) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -125,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     height: MediaQuery.of(context).size.height / 3,
                     margin: EdgeInsets.only(top: 80),
                     child: Image(
-                      image: AssetImage("assets/icon-v1.png"),
+                      image: AssetImage("assets/lost_item.png"),
                     ),
                   ),
                   Container(
@@ -142,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     child: ElevatedButton(
                       onPressed: ()async {
                         SharedPreferences prefs = await SharedPreferences.getInstance();
-                        if (prefs.get("sk1") != null && prefs.get("sk2")  != null) {
+                        if (prefs.get("username") != null && prefs.get("password")  != null) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(

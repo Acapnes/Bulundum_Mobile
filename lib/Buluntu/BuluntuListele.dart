@@ -4,12 +4,11 @@ import 'package:bulundum_mobile/Controllers/BottomNavigationBar/mainBNB.dart';
 import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
 import 'package:bulundum_mobile/Controllers/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Controllers/FAB/mainFAB.dart';
+import 'package:bulundum_mobile/Pages/Help/Help.dart';
 import 'package:bulundum_mobile/Pages/QRMenu/QRMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class MainBuluntuList extends StatefulWidget {
@@ -18,35 +17,21 @@ class MainBuluntuList extends StatefulWidget {
 }
 
 class _MainBuluntuListState extends State<MainBuluntuList> {
-  List<Buluntu> buluntular = [];
-  ScrollController _scrollController = ScrollController();
-  List data;
-  int pageNumber = 1;
-  String dataController;
-  bool first = true;
-  double BNBHeight = 70;
+  List<Item> buluntular = [];
 
-  Future<List<Buluntu>> ListFoundItems() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final uri = Uri.https("dev.bulundum.com", "/api/v3/founditems", {
-      'sk1': prefs.get("sk1"),
-      'sk2': prefs.get("sk2"),
-      'Page': "$pageNumber"
-    });
-    var response = await http.get(uri);
+  Future<List<Item>> ListFoundItems() async {
+    /// 192.168.1.33 LocalHost ip
+    var url = 'http://192.168.1.33/mobiledb/item/itemlist.php';
+    http.Response response = await http.get(Uri.parse(url));
     var jsonData = jsonDecode(response.body);
-    data = jsonData["Records"];
-    var buluntudata = jsonData["Records"];
-    List<Buluntu> buluntular = [];
-    for (var buluntu in buluntudata){
-      Buluntu newBuluntu = Buluntu(
-          buluntu["Title"],
-          buluntu["Id"],
-          buluntu["Images"],
-          buluntu["StatusText"],
-          buluntu["PrivateDetails"],
-          buluntu["StoragePlace"]["Title"],
-          buluntu["InventoryNo"]);
+    List<Item> buluntular = [];
+    for (var buluntu in jsonData){
+      Item newBuluntu = Item(
+          buluntu["item_id"],
+          buluntu["item_name"],
+          buluntu["item_photo"],
+          buluntu["item_location"],
+          buluntu["comment"],);
       buluntular.add(newBuluntu);
     }
     return buluntular;
@@ -59,12 +44,24 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
     ListFoundItems();
   }
 
-  toTop() async {
-    _scrollController.animateTo(0,
-        duration: Duration(milliseconds: 1250), curve: Curves.easeInOut);
+  removeItem(id) async {
+    var url = 'http://192.168.1.33/mobiledb/item/itemdelete.php';
+    var response = await http.post(Uri.parse(url),
+        body: ({
+          'item_id': id,
+        }));
+    if(response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Silme işlemi başarılı.")));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MainBuluntuList()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Silme işlemi başarısız.")));
+    }
   }
 
-  _showAlertDialogSilme(){
+  _showAlertDialogSilme(id){
     showDialog(
         context: context,
         builder: (BuildContext context){
@@ -78,7 +75,9 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                 children: [
                   Container(
                     child: ElevatedButton(
-                      onPressed: (){},
+                      onPressed: (){
+                        removeItem(id);
+                      },
                       child: Text("Sil",style: TextStyle(fontSize: 16)),
                     ),
                   ),
@@ -98,24 +97,50 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       bottomNavigationBar: mainBNB(),
+      drawer: mainDrawer(),
       appBar: AppBar(elevation: 0,title:Text("Buluntu Listesi"),centerTitle: true,backgroundColor: kPrimaryColor,
         actions: [
-          IconButton(
-            icon: Icon(Icons.qr_code),
-            onPressed: (){
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => QRMenu()));
-            },
-          ),
+          PopupMenuButton(
+              iconSize: 20,
+              onSelected: (value){
+                if(value == 2){
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => MainHelp()));
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  padding: EdgeInsets.only(right: 0,left: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.refresh,color: Colors.black),
+                      Padding(
+                        padding: const EdgeInsets.only(left:8.0),
+                        child: Text("Sayfayı yenile"),
+                      ),
+                    ],
+                  ),
+                  value: 1,
+                ),
+                PopupMenuItem(
+                  padding: EdgeInsets.only(right: 0,left: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.help,color: Colors.black),
+                      Padding(
+                        padding: const EdgeInsets.only(left:8.0),
+                        child: Text("Yardım"),
+                      ),
+                    ],
+                  ),
+                  value: 2,
+                ),
+              ]),
         ],
       ),
       floatingActionButton:
@@ -172,41 +197,6 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: (){
-                      setState(() {
-                        if(pageNumber>1){
-                            toTop();
-                          pageNumber--;
-                        }
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        Icon(Icons.arrow_back,color: Colors.white,),
-                        Text("Önceki Buluntular",style: TextStyle(color: Colors.white),)
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: (){
-                      setState(() {
-                          toTop();
-                        pageNumber++;
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        Icon(Icons.arrow_forward,color: Colors.white,),
-                        Text("Sonraki Buluntular",style: TextStyle(color: Colors.white),)
-                      ],
-                    ),
-                  ),
-                ],
-              ),
               Container(
                 child: FutureBuilder(
                   future: ListFoundItems(),
@@ -238,150 +228,147 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                                 margin: EdgeInsets.only(top: 10),
                                 child: ListView.builder(
                                   physics: BouncingScrollPhysics(),
-                                  controller: _scrollController,
-                                  itemCount: snapshot.data.length,
+                                  itemCount: snapshot.data.length == null ? 0 : snapshot.data.length,
                                   itemBuilder: (context, i) {
-                                    return Slidable(
-                                      //actionPane: SlidableScrollActionPane(),
-                                      /*actions: <Widget>[
-                                               Container(
-                                                 margin: EdgeInsets.only(left: 10,right: 5),
-                                                 child: ElevatedButton(
-                                                     child: Container(
-                                                       height: 150,
-                                                       child: Column(
-                                                         children: [
-                                                           Padding(
-                                                             padding: const EdgeInsets.only(right: 3.0,top: 30,bottom: 30),
-                                                             child: Icon(Icons.more,color: Colors.black,size: 50,),
-                                                           ),
-                                                           Text("Detaylar",style: TextStyle(fontSize: 14,color: Colors.black,fontWeight: FontWeight.bold),),
-                                                         ],
-                                                       ),
-                                                     ),
-                                                   onPressed: (){
-                                                     Navigator.push(
-                                                         context,
-                                                         new MaterialPageRoute(
-                                                             builder: (context) =>
-                                                                 mainBuluntuDetaylar(snapshot.data[i])));
-                                                   },
-                                                   style: ElevatedButton.styleFrom(
-                                                       elevation: 20,
-                                                       primary: Colors.greenAccent,
-                                                     minimumSize: Size(175,175),
-                                                   ),
-                                                 ),
-                                               ),
-                                            ],
-                                            secondaryActions: <Widget>[
-                                              Container(
-                                                margin: EdgeInsets.only(left: 5,right: 10),
-                                                child: ElevatedButton(
-                                                  child: Container(
-                                                    height: 150,
-                                                    child: Column(
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(left: 3.0,top: 30,bottom: 30),
-                                                          child: Icon(Icons.delete,color: Colors.black,size: 50,),
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(22),
+                                        color: Colors.orangeAccent,
+                                        boxShadow: [kDefaultShadow],
+                                      ),
+                                      margin: EdgeInsets.all(10),
+                                      child: Container(
+                                        height: MediaQuery.of(context).size.height * 0.29,
+                                        margin: EdgeInsets.only(right: 10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(22),
+                                        ),
+                                        child: Stack(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  height: 50,
+                                                  child: Stack(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 8.0),
+                                                        child: Center(
+                                                            child: Text(
+                                                              snapshot.data[i].item_name,
+                                                              style: TextStyle(fontSize: 18),
+                                                            )),
+                                                      ),
+                                                      Positioned(
+                                                          right: 20,
+                                                          top: 10,
+                                                          child:  PopupMenuButton(
+                                                              iconSize: 20,
+                                                              onSelected: (value){
+                                                                if( value == 1){
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      new MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              mainBuluntuDetaylar(snapshot.data[i])));
+                                                                }
+                                                                else if(value==2)
+                                                                  removeItem(snapshot.data[i].item_id);
+                                                                else if(value ==3){
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      new MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              QRMenu(snapshot.data[i].item_id+snapshot.data[i].item_name)));
+                                                                }
+                                                              },
+                                                              itemBuilder: (context) => [
+                                                                PopupMenuItem(
+                                                                    padding: EdgeInsets.only(right: 0,left: 8),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Icon(Icons.more),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(left:8.0),
+                                                                        child: Text("Eşya Detayları"),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  value: 1,
+                                                                ),
+                                                                PopupMenuItem(
+                                                                  padding: EdgeInsets.only(right: 0,left: 8),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Icon(Icons.delete),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(left:8.0),
+                                                                        child: Text("Eşyayı Sil"),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  value: 2,
+                                                                ),
+                                                                PopupMenuItem(
+                                                                  padding: EdgeInsets.only(right: 0,left: 8),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Icon(Icons.qr_code),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(left:8.0),
+                                                                        child: Text("QR Kodu Görüntüle"),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  value: 3,
+                                                                ),
+                                                              ]),
+                                                      ),
+                                                  ]),
+                                                ),
+                                                Container(
+                                                  margin: EdgeInsets.only(right: 100),
+                                                  child: Column(
+                                                    children: [
+                                                      ListTile(
+                                                        title: snapshot.data[i].item_id != null ? Text("Eşya no : " + snapshot.data[i].item_id):Text("null"),
+                                                        subtitle: snapshot.data[i].comment != null ?
+                                                        Text("Eşya konumu  : " + snapshot.data[i].item_location,
+                                                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15))
+                                                            : Text("Null"),
+                                                      ),
+                                                      Align(
+                                                        alignment: Alignment.center,
+                                                        child: Container(
+                                                          margin: EdgeInsets.only(top: 10,left: 90),
+                                                          width: 150,
+                                                          height: 80,
+                                                          child: snapshot.data[i].item_photo != "null" ?
+                                                          Image.memory(
+                                                            base64Decode(snapshot.data[i].item_photo), fit: BoxFit.fill,
+                                                          ): Center(child: Text("Fotoğraf Yok.")),
                                                         ),
-                                                        Text("Sil",style: TextStyle(fontSize: 14,color: Colors.black,fontWeight: FontWeight.bold),),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  onPressed: (){},
-                                                  style: ElevatedButton.styleFrom(
-                                                      elevation: 20,
-                                                      primary: Colors.redAccent,
-                                                      minimumSize: Size(175,175),
+                                                      )
+                                                    ],
                                                   ),
                                                 ),
-                                              ),
-                                            ],*/
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(22),
-                                          color: Colors.orangeAccent,
-                                          boxShadow: [kDefaultShadow],
-                                        ),
-                                        margin: EdgeInsets.all(10),
-                                        child: Container(
-                                          height: MediaQuery.of(context).size.height * 0.29,
-                                          margin: EdgeInsets.only(right: 10),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(22),
-                                          ),
-                                          child: Stack(
-                                            children: [
-                                              Column(
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 8.0),
-                                                    child: Center(
-                                                        child: Text(
-                                                          snapshot.data[i].Title,
-                                                          style: TextStyle(fontSize: 18),
-                                                        )),
-                                                  ),
-                                                  Container(
-                                                    margin: EdgeInsets.only(right: 100),
-                                                    child: Column(
-                                                      children: [
-                                                        ListTile(
-                                                          title:
-                                                          Text("Eşya no : " + snapshot.data[i].Id),
-                                                          subtitle: snapshot.data[i].Images == null
-                                                              ? Text(
-                                                            "Envanter no  : " +
-                                                                snapshot.data[i].InventoryNo,
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 15),
-                                                          )
-                                                              : Text("Null"),
-                                                        ),
-                                                        ListTile(
-                                                          title: Text(
-                                                              "Eşya durumu : " + snapshot.data[i].StatusText),
-                                                          subtitle: Text(
-                                                              "Bulunduğu depo  : " +
-                                                                  snapshot.data[i].StorageTitle,
-                                                              style: TextStyle(
-                                                                  fontWeight: FontWeight.bold,
-                                                                  fontSize: 15)),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Align(
-                                                  alignment: Alignment.centerRight,
-                                                  child: Container(
-                                                    width: 110,
-                                                    height: 110,
-                                                    child: snapshot.data[i].Images.length > 0 ? Image(
-                                                        image: NetworkImage(
-                                                            snapshot.data[i].Images[0]["RemotePath"]))
-                                                        : Image.asset("assets/icon-v1.png") ,
-                                                  )
-                                              ),
-                                              Stack(
-                                                children: [
-                                                  Positioned(
-                                                    left:0,
-                                                    bottom: 0,
-                                                    child: GestureDetector(
-                                                      onTap: (){
-                                                        Navigator.push(
-                                                            context,
-                                                            new MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    mainBuluntuDetaylar(snapshot.data[i])));
-                                                      },
-                                                      child: Container(
+                                              ],
+                                            ),
+                                            Stack(
+                                              children: [
+                                                Positioned(
+                                                  left:0,
+                                                  bottom: 0,
+                                                  child: GestureDetector(
+                                                    onTap: (){
+                                                      Navigator.push(
+                                                          context,
+                                                          new MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  mainBuluntuDetaylar(snapshot.data[i])));
+                                                    },
+                                                    child: Container(
                                                         padding: EdgeInsets.symmetric(
                                                           horizontal: kDefaultPadding*1.5,
                                                           vertical: kDefaultPadding/3.5,
@@ -393,37 +380,36 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                                                               topRight: Radius.circular(22),
                                                             )
                                                         ),
-                                                        child: Icon(Icons.more),
-                                                      ),
+                                                        child: Icon(Icons.more)
                                                     ),
                                                   ),
-                                                  Positioned(
-                                                    right:0,
-                                                    bottom: 0,
-                                                    child: GestureDetector(
-                                                      onTap: (){
-                                                        _showAlertDialogSilme();
-                                                      },
-                                                      child: Container(
-                                                        padding: EdgeInsets.symmetric(
-                                                          horizontal: kDefaultPadding*1.5,
-                                                          vertical: kDefaultPadding/3.5,
-                                                        ),
-                                                        decoration: BoxDecoration(
-                                                            color: Colors.redAccent,
-                                                            borderRadius: BorderRadius.only(
-                                                              bottomRight: Radius.circular(22),
-                                                              topLeft: Radius.circular(22),
-                                                            )
-                                                        ),
-                                                        child: Icon(Icons.delete),
+                                                ),
+                                                Positioned(
+                                                  right:0,
+                                                  bottom: 0,
+                                                  child: GestureDetector(
+                                                    onTap: (){
+                                                      _showAlertDialogSilme(snapshot.data[i].item_id);
+                                                    },
+                                                    child: Container(
+                                                      padding: EdgeInsets.symmetric(
+                                                        horizontal: kDefaultPadding*1.5,
+                                                        vertical: kDefaultPadding/3.5,
                                                       ),
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.redAccent,
+                                                          borderRadius: BorderRadius.only(
+                                                            bottomRight: Radius.circular(22),
+                                                            topLeft: Radius.circular(22),
+                                                          )
+                                                      ),
+                                                      child: Icon(Icons.delete),
                                                     ),
                                                   ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     );
@@ -446,14 +432,13 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
   }
 }
 
-class Buluntu {
-  String Title;
-  String Id;
-  List Images = [];
-  String StatusText;
-  String PrivateDetails;
-  String StorageTitle;
-  String InventoryNo;
+class Item {
 
-  Buluntu(this.Title, this.Id, this.Images, this.StatusText, this.PrivateDetails,this.StorageTitle, this.InventoryNo);
+  var item_id;
+  var item_name;
+  var item_photo;
+  var item_location;
+  var comment;
+
+  Item(this.item_id, this.item_name, this.item_photo, this.item_location, this.comment);
 }
