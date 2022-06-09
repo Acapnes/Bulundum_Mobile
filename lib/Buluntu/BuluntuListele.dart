@@ -5,6 +5,7 @@ import 'package:bulundum_mobile/Controllers/Colors/primaryColors.dart';
 import 'package:bulundum_mobile/Controllers/Drawer/mainDrawer.dart';
 import 'package:bulundum_mobile/Controllers/FAB/mainFAB.dart';
 import 'package:bulundum_mobile/Pages/Help/Help.dart';
+import 'package:bulundum_mobile/Pages/Profile/Profile.dart';
 import 'package:bulundum_mobile/Pages/QRMenu/QRMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -155,7 +156,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
                       builder: (context) => FotoBuluntu()));
             },
             icon: const Icon(Icons.add_box),
-            text: "Kayıp Eşya Ekle",
+            text: "Eşya Ekle",
             textWidth: 140,
             textHeight: 30,
           ),
@@ -164,10 +165,10 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MainBuluntuList()));
+                      builder: (context) => MainProfile()));
             },
             icon: const Icon(Icons.add),
-            text: "Buluntu Ekle",
+            text: "Profil",
             textWidth: 140,
             textHeight: 30,
           ),

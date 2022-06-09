@@ -62,7 +62,7 @@ class _FotoBuluntuState extends State<FotoBuluntu> {
           'item_name': item_nameController.text,
           'item_location': item_locationController.text,
           'comment': commentController.text,
-          'item_photo': imageData.isEmpty ? imageData : "null",
+          'item_photo': imageData.isNotEmpty ? imageData : "null",
         }));
     var data = json.decode(response.body);
     print(response.statusCode.toString());
