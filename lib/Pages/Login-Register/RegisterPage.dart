@@ -152,7 +152,7 @@ class _RegisterMainState extends State<RegisterMain> {
   Future<void> register() async {
     /// 192.168.1.33 LocalHost ip
     if (nameController.text.isNotEmpty && surnameController.text.isNotEmpty && usernameController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-      var url = 'http://192.168.1.33/mobiledb/auth/register.php';
+      var url = 'https://db9a-85-96-210-113.ngrok.io/mobiledb/auth/register.php';
       var response = await http.post(Uri.parse(url),
           body: ({
             'name': nameController.text,

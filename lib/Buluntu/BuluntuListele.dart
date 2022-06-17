@@ -22,7 +22,7 @@ class _MainBuluntuListState extends State<MainBuluntuList> {
 
   Future<List<Item>> ListFoundItems() async {
     /// 192.168.1.33 LocalHost ip
-    var url = 'http://192.168.1.33/mobiledb/item/itemlist.php';
+    var url = 'https://db9a-85-96-210-113.ngrok.io/mobiledb/item/itemlist.php';
     http.Response response = await http.get(Uri.parse(url));
     var jsonData = jsonDecode(response.body);
     List<Item> buluntular = [];

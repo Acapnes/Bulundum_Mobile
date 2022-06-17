@@ -46,7 +46,7 @@ class _mainBuluntuDetaylarState extends State<mainBuluntuDetaylar> {
   }
 
   updateItem() async {
-    var url = 'http://192.168.1.33/mobiledb/item/itemupdate.php';
+    var url = 'https://db9a-85-96-210-113.ngrok.io/mobiledb/item/itemupdate.php';
     var response = await http.post(Uri.parse(url),
     body: ({
       'item_id': widget.buluntu.item_id,
@@ -66,7 +66,7 @@ class _mainBuluntuDetaylarState extends State<mainBuluntuDetaylar> {
   }
 
   removeItem() async {
-    var url = 'http://192.168.1.33/mobiledb/item/itemdelete.php';
+    var url = 'https://db9a-85-96-210-113.ngrok.io/mobiledb/item/itemdelete.php';
     var response = await http.post(Uri.parse(url),
         body: ({
           'item_id': widget.buluntu.item_id,
@@ -83,7 +83,7 @@ class _mainBuluntuDetaylarState extends State<mainBuluntuDetaylar> {
   }
 
   removePhoto() async {
-    var url = 'http://192.168.1.33/mobiledb/item/itemphotodelete.php';
+    var url = 'https://db9a-85-96-210-113.ngrok.io/mobiledb/item/itemphotodelete.php';
     var response = await http.post(Uri.parse(url),
         body: ({
           'item_id': widget.buluntu.item_id,

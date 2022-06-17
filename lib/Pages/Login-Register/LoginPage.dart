@@ -139,7 +139,7 @@ class _LoginMainState extends State<LoginMain> {
   Future<void> login() async {
     /// 192.168.1.33 LocalHost ip
     if (passwordController.text.isNotEmpty && usernameController.text.isNotEmpty) {
-      var url = 'http://192.168.1.33/mobiledb/auth/login.php';
+      var url = 'https://db9a-85-96-210-113.ngrok.io/mobiledb/auth/login.php';
       var response = await http.post(Uri.parse(url),
           body: ({
             'username': usernameController.text,

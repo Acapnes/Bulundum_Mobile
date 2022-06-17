@@ -28,7 +28,7 @@ class _MainProfileState extends State<MainProfile> {
   }
 
   deleteProfile() async {
-    var url = 'http://192.168.1.33/mobiledb/auth/profileDelete.php';
+    var url = 'https://db9a-85-96-210-113.ngrok.io/mobiledb/auth/profileDelete.php';
     var response = await http.post(Uri.parse(url),
         body: ({
           'id': profileId,
@@ -51,7 +51,7 @@ class _MainProfileState extends State<MainProfile> {
   }
 
   profileUptade() async {
-    var url = 'http://192.168.1.33/mobiledb/auth/profileupdate.php';
+    var url = 'https://db9a-85-96-210-113.ngrok.io/mobiledb/auth/profileupdate.php';
     var response = await http.post(Uri.parse(url),
         body: ({
           'id': profileId,
@@ -76,7 +76,7 @@ class _MainProfileState extends State<MainProfile> {
   }
 
   logout() async {
-    var url = 'http://192.168.1.33/mobiledb/auth/logout.php';
+    var url = 'https://db9a-85-96-210-113.ngrok.io/mobiledb/auth/logout.php';
     var response = await http.post(Uri.parse(url),
         body: ({
           'username': textFirstNameController.text,
@@ -99,7 +99,7 @@ class _MainProfileState extends State<MainProfile> {
 
   initialGet() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var url = "http://192.168.1.33/mobiledb/auth/userInfo.php";
+    var url = "https://db9a-85-96-210-113.ngrok.io/mobiledb/auth/userInfo.php";
     var response = await http.post(Uri.parse(url),
         body: ({
           'username': prefs.get("username"),
